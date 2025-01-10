@@ -24,8 +24,7 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.Pantalla2ViewM
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.style.TextAlign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,10 +44,10 @@ fun Pantalla2Screen(
                         Text(
                             text = "Nightcap Lounge",
                             style = MaterialTheme.typography.titleLarge.copy(
-                                fontSize = 25.sp,
+                                fontSize = 28.sp, // Tamaño reducido
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Serif,
-                                color = Color.White // Usar blanco para que contraste con el fondo oscuro
+                                color = Color(0xFF333333)
                             ),
                             modifier = Modifier.align(Alignment.Center)
                         )
@@ -59,7 +58,7 @@ fun Pantalla2Screen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Volver",
-                            tint = Color.White // Los iconos también en blanco para contrastar
+                            tint = Color(0xFF333333)
                         )
                     }
                 },
@@ -71,8 +70,8 @@ fun Pantalla2Screen(
                         Text(
                             text = usuario,
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 18.sp,
-                                color = Color.White // Texto en blanco
+                                fontSize = 16.sp, // Tamaño reducido
+                                color = Color(0xFF333333)
                             )
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -82,33 +81,42 @@ fun Pantalla2Screen(
                             modifier = Modifier
                                 .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
                                 .padding(8.dp),
-                            tint = Color.White // El icono de cuenta también en blanco
+                            tint = Color(0xFF333333)
                         )
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color(0xFF333333) // Usar containerColor en lugar de backgroundColor
+                    containerColor = Color.White
                 )
             )
         }
     ) { innerPadding ->
-        // Fondo degradado aplicado aquí en el Column
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFFFF5722), // Naranja
-                            Color(0xFFF44336), // Rojo
-                            Color(0xFFFFEB3B)  // Amarillo
-                        )
-                    )
-                )
+                .background(Color.White)
         ) {
-            Spacer(modifier = Modifier.height(30.dp)) // Espacio adicional entre el nombre y los cards
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Frase introductoria ajustada
+            Text(
+                text = "Déjate seducir por el sabor de la creatividad en cada trago. ¡Prueba nuestros cócteles y descubre tu favorito!",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 21.sp, // Tamaño reducido
+                    fontFamily = FontFamily.Serif,
+                    color = Color(0xFFFF7043),
+                    letterSpacing = 0.5.sp,
+                    lineHeight = 28.sp,
+                    textAlign = TextAlign.Center
+                ),
+                color = Color(0xFFFF7043),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp)
+            )
 
             // Mostrar los cards de bebidas
             if (bebidasState.value.isEmpty()) {
@@ -134,25 +142,27 @@ fun Pantalla2Screen(
     }
 }
 
+
+
+
 @Composable
 fun CocktailCard(bebida: Drink) {
-    // Establecer el mismo color para el fondo que el del TopAppBar
-    val cardBackgroundColor = Color(0xFF333333)
+    // Fondo blanco para los cards
+    val cardBackgroundColor = Color.White
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .clickable { /* Acción al hacer clic en un cóctel */ }
-            .padding(vertical = 8.dp), // Padding adicional entre cards
+            .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = cardBackgroundColor) // Fondo del card en gris oscuro
+        colors = CardDefaults.cardColors(containerColor = cardBackgroundColor) // Fondo blanco
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(12.dp) // Padding dentro del card
+            modifier = Modifier.padding(12.dp)
         ) {
-            // Imagen sin redondeo en las esquinas
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -168,53 +178,47 @@ fun CocktailCard(bebida: Drink) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp)) // Espacio entre la imagen y el texto
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // Nombre del cóctel
             Text(
                 text = bebida.strDrink,
                 modifier = Modifier.padding(horizontal = 12.dp),
                 style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold,  // Usar un peso negrita
-                    fontSize = 24.sp,  // Tamaño más grande
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
                     fontFamily = FontFamily.Serif
                 ),
-                color = Color.White // Texto blanco
+                color = Color(0xFF333333) // Gris ocuro
             )
 
-            // Espacio entre nombre y la información
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Información en una sola línea centrada
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Categoría
                 Text(
                     text = "Categoría: ${bebida.strCategory}",
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold,  // Letras en negrita
+                        fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         fontFamily = FontFamily.Serif
                     ),
-                    color = Color.White // Texto blanco
+                    color = Color(0xFFFF7043) //  Naranja
                 )
 
-                Spacer(modifier = Modifier.width(16.dp)) // Espacio entre los textos
+                Spacer(modifier = Modifier.width(16.dp))
 
-                // Alcohol
                 Text(
                     text = "Alcohol: ${if (bebida.strAlcoholic == "Alcoholic") "Sí" else "No"}",
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold,  // Letras en negrita
+                        fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         fontFamily = FontFamily.Serif
                     ),
-                    color = Color.White // Texto blanco
+                    color = Color(0xFFFF7043) //  Naranja
                 )
             }
         }
     }
 }
-
