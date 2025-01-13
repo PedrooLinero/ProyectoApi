@@ -29,15 +29,19 @@ import androidx.compose.ui.text.style.TextAlign
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pantalla2Screen(
-    navegarAPantalla1: () -> Unit,
-    navegarAPantalla3: (String) -> Unit,
-    usuario: String,
-    pantalla2ViewModel: Pantalla2ViewModel
+    navegarAPantalla1: () -> Unit, // Función para navegar a la pantalla 1
+    navegarAPantalla3: (String) -> Unit, // Función para navegar a la pantalla 3
+    usuario: String, // Nombre del usuario
+    pantalla2ViewModel: Pantalla2ViewModel // ViewModel de la pantalla 2
 ) {
+
+    // Obtener el estado de las bebidas desde el ViewModel
     val bebidasState: State<List<Drink>> =
         pantalla2ViewModel.bebidas.collectAsState(initial = emptyList())
 
+    // Scaffold con la AppBar y el contenido de la pantalla
     Scaffold(
+        // TopBar para mostrar el título y el menú de usuario
         topBar = {
             TopAppBar(
                 title = {
@@ -45,7 +49,7 @@ fun Pantalla2Screen(
                         Text(
                             text = "Nightcap Lounge",
                             style = MaterialTheme.typography.titleLarge.copy(
-                                fontSize = 28.sp, // Tamaño reducido
+                                fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Serif,
                                 color = Color(0xFF333333)
@@ -54,6 +58,8 @@ fun Pantalla2Screen(
                         )
                     }
                 },
+
+                // Navegar a la pantalla 1 al hacer clic en el botón de retroceso
                 navigationIcon = {
                     IconButton(onClick = { navegarAPantalla1() }) {
                         Icon(
@@ -63,6 +69,8 @@ fun Pantalla2Screen(
                         )
                     }
                 },
+
+                // Menú de usuario con el nombre del usuario
                 actions = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -71,7 +79,7 @@ fun Pantalla2Screen(
                         Text(
                             text = usuario,
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 16.sp, // Tamaño reducido
+                                fontSize = 16.sp,
                                 color = Color(0xFF333333)
                             )
                         )
@@ -89,6 +97,8 @@ fun Pantalla2Screen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+
+        // Contenido de la pantalla
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -98,12 +108,11 @@ fun Pantalla2Screen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Frase introductoria ajustada
             Text(
                 text = "Déjate seducir por el sabor de la creatividad en cada trago. ¡Prueba nuestros cócteles y descubre tu favorito!",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 21.sp, // Tamaño reducido
+                    fontSize = 21.sp,
                     fontFamily = FontFamily.Serif,
                     color = Color(0xFFFF7043),
                     letterSpacing = 0.5.sp,
@@ -122,6 +131,7 @@ fun Pantalla2Screen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
+                    // Mostrar un CircularProgressIndicator mientras se cargan las bebidas
                     CircularProgressIndicator()
                 }
             } else {
@@ -131,6 +141,7 @@ fun Pantalla2Screen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    // Iterar sobre la lista de bebidas y mostrar un card para cada una de ellas
                     items(bebidasState.value) { bebida ->
                         CocktailCard(bebida, navegarAPantalla3 = navegarAPantalla3)
                     }
@@ -140,7 +151,7 @@ fun Pantalla2Screen(
     }
 }
 
-
+// Card para mostrar la información de una bebida
 @Composable
 fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
     // Fondo blanco para los cards
@@ -153,7 +164,7 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
             .clickable { navegarAPantalla3(bebida.idDrink) }
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = cardBackgroundColor) // Fondo blanco
+        colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -184,7 +195,7 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
                     fontSize = 24.sp,
                     fontFamily = FontFamily.Serif
                 ),
-                color = Color(0xFF333333) // Gris ocuro
+                color = Color(0xFF333333)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -200,7 +211,7 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
                         fontSize = 16.sp,
                         fontFamily = FontFamily.Serif
                     ),
-                    color = Color(0xFFFF7043) //  Naranja
+                    color = Color(0xFFFF7043)
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -212,7 +223,7 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
                         fontSize = 16.sp,
                         fontFamily = FontFamily.Serif
                     ),
-                    color = Color(0xFFFF7043) //  Naranja
+                    color = Color(0xFFFF7043)
                 )
             }
         }

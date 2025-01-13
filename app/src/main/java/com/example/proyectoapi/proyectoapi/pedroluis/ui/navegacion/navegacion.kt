@@ -12,11 +12,13 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.Pantalla2ViewM
 
 @Composable
 fun Navegacion() {
+    // Inicializa el controlador de navegación
     val navController = rememberNavController()
 
     // Inicializamos el ViewModel aquí
     val pantalla2ViewModel: Pantalla2ViewModel = viewModel()
 
+    // Definimos las pantallas de la aplicación
     NavHost(navController = navController, startDestination = Pantalla1) {
         composable<Pantalla1> {
             Pantalla1Screen(navegarAPantalla2 = { usuario ->
@@ -26,8 +28,9 @@ fun Navegacion() {
         composable<Pantalla2> { backStackEntry ->
             val usuario = backStackEntry.toRoute<Pantalla2>().usuario
             Pantalla2Screen(
+                // Pasamos las funciones de navegación
                 navegarAPantalla1 = { navController.popBackStack(Pantalla1, inclusive = false ) },
-                usuario = usuario,  // Pasamos el parámetro usuario
+                usuario = usuario,
                 pantalla2ViewModel = pantalla2ViewModel,
                 navegarAPantalla3 = { idDrink ->
                     navController.navigate(Pantalla3(idDrink, usuario))
@@ -37,9 +40,10 @@ fun Navegacion() {
 
         composable<Pantalla3> {backStackEntry ->
             val idDrink = backStackEntry.toRoute<Pantalla3>().idDrink
+            val usuario = backStackEntry.toRoute<Pantalla3>().usuario
             Pantalla3DetalleScreen(
                 idDrink = idDrink,
-                usuario = backStackEntry.toRoute<Pantalla3>().usuario,
+                usuario = usuario,
             ) {
                 navController.navigate(Pantalla2(backStackEntry.toRoute<Pantalla3>().usuario)) {
                     popUpTo(Pantalla2(backStackEntry.toRoute<Pantalla3>().usuario)) {

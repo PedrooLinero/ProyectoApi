@@ -8,7 +8,7 @@ object repositoryList {
     suspend fun getListaBebidas(): List<Drink> {
         return try {
             val response = RemoteConnection.remoteService.getDrinks()
-            response.drinks  // Devuelve una lista vacía si no hay bebidas
+            response.drinks  //  Devuelve la lista de bebidas contenida en la respuesta
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList() // Devuelve una lista vacía en caso de error
@@ -18,7 +18,9 @@ object repositoryList {
     // Nueva función que recibe un ID y devuelve la bebida seleccionada
     suspend fun getBebidaPorId(id: String): Drink? {
         return try {
+            // Obtiene la lista de bebidas
             val response = getListaBebidas()
+            // Devuelve la bebida con el ID seleccionado
             return response.find { it.idDrink == id }
         } catch (e: Exception) {
             e.printStackTrace()

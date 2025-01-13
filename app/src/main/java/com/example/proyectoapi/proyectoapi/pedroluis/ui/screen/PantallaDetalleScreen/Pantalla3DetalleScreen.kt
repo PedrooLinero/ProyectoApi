@@ -30,17 +30,20 @@ import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.repositor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pantalla3DetalleScreen(
-    idDrink: String,
-    usuario: String,
-    navigateToBack: (String) -> Unit
+    idDrink: String, // ID de la bebida a mostrar
+    usuario: String, // Nombre del usuario
+    navigateToBack: (String) -> Unit // Función para navegar a la pantalla anterior
 ) {
+    // Estado para almacenar la bebida a mostrar en la pantalla de detalles
     val bebidaState = remember { mutableStateOf<Drink?>(null) }
 
+    // Cargar la bebida al lanzar la pantalla por primera vez
     LaunchedEffect(idDrink) {
         val bebida = repositoryList.getBebidaPorId(idDrink)
         bebidaState.value = bebida
     }
 
+    // Si la bebida está disponible, se muestra la interfaz
     bebidaState.value?.let { bebida ->
         Scaffold(
             topBar = {
@@ -60,7 +63,7 @@ fun Pantalla3DetalleScreen(
                             )
                         }
                     },
-                            actions = {
+                    actions = {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(end = 16.dp)
@@ -68,7 +71,7 @@ fun Pantalla3DetalleScreen(
                             Text(
                                 text = usuario,
                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize = 16.sp, // Tamaño reducido
+                                    fontSize = 16.sp,
                                     color = Color(0xFF333333)
                                 )
                             )
@@ -93,7 +96,7 @@ fun Pantalla3DetalleScreen(
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                // Tarjeta con la imagen
+                // Card con la imagen
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -101,6 +104,7 @@ fun Pantalla3DetalleScreen(
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.LightGray)
                 ) {
+                    // Imagen del cóctel
                     AsyncImage(
                         model = bebida.strDrinkThumb,
                         contentDescription = "Imagen de ${bebida.strDrink}",
@@ -111,7 +115,6 @@ fun Pantalla3DetalleScreen(
                     )
                 }
 
-                // Nombre del cóctel en el centro
                 Text(
                     text = bebida.strDrink,
                     fontSize = 30.sp,
@@ -145,7 +148,6 @@ fun Pantalla3DetalleScreen(
                     )
                 }
 
-                // Detalle del Vaso centrado en la fila debajo
                 Text(
                     text = "Vaso: ${bebida.strGlass}",
                     fontSize = 17.sp,
@@ -158,6 +160,7 @@ fun Pantalla3DetalleScreen(
                 )
 
                 // Ingredientes
+                // Se crea una lista con los ingredientes de la bebida
                 val strIngredientes: List<Any> = listOf(
                     bebida.strIngredient1,
                     bebida.strIngredient2,
@@ -174,9 +177,9 @@ fun Pantalla3DetalleScreen(
                     bebida.strIngredient13,
                     bebida.strIngredient14,
                     bebida.strIngredient15
-                ).filterNotNull()
+                ).filterNotNull() // Filtra los ingredientes nulos
 
-                ListaIngredientes(strIngredientes)
+                ListaIngredientes(strIngredientes) // Muestra la lista de ingredientes
 
                 // Instrucciones
                 Text(
@@ -203,7 +206,7 @@ fun Pantalla3DetalleScreen(
                 )
 
                 // Botón para pedir el cóctel
-                Spacer(modifier = Modifier.weight(1f)) // Para empujar el botón al final de la pantalla
+                Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = { /* Acción para pedir el cóctel */ },
                     modifier = Modifier
@@ -230,20 +233,20 @@ fun Pantalla3DetalleScreen(
 }
 
 
+// Función para mostrar la lista de ingredientes
 @Composable
-fun ListaIngredientes(ingredientes: List<Any>) {
+fun ListaIngredientes(ingredientes: List<Any>) { // Lista de ingredientes
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 20.dp)
-            .padding(horizontal = 16.dp) // Esto asegura que tenga espacio a los lados
+            .padding(horizontal = 16.dp)
     ) {
-        // Título "Ingredientes" centrado
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            contentAlignment = Alignment.Center // Centrado dentro del Box
+            contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "Ingredientes",
@@ -253,7 +256,7 @@ fun ListaIngredientes(ingredientes: List<Any>) {
             )
         }
 
-        // Lista de ingredientes en filas de 3
+        // Lista de ingredientes en filas de 2
         val chunkedIngredientes = ingredientes.chunked(2) // Divide la lista en sublistas de 2 elementos
 
         chunkedIngredientes.forEach { filaIngredientes ->
@@ -263,14 +266,13 @@ fun ListaIngredientes(ingredientes: List<Any>) {
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                //Espacio entre el titulo y los ingredientes
                 Spacer(modifier = Modifier.height(8.dp))
 
-                filaIngredientes.forEach { ingrediente ->
+                filaIngredientes.forEach { ingrediente -> // Muestra los ingredientes
                     Text(
                         text = "• $ingrediente",
                         fontSize = 18.sp,
-                        color = Color(0xFFFF5722), // Ingredientes en naranja
+                        color = Color(0xFFFF5722),
                         modifier = Modifier.padding(end = 16.dp)
                     )
                 }
