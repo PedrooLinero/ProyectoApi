@@ -16,12 +16,14 @@ object repositoryList {
         }
     }
 
-    // Ejemplo de llamada
-    suspend fun mostrarBebidas() {
-        val bebidas = repositoryList.getListaBebidas()
-        bebidas.forEach { bebida ->
-            println("Nombre: ${bebida.strDrink}, Imagen: ${bebida.strDrinkThumb}")
-
+    // Nueva función que recibe un ID y devuelve la bebida seleccionada
+    suspend fun getBebidaPorId(id: String): Drink? {
+        return try {
+            val response = getListaBebidas()
+            return response.find { it.idDrink == id }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null // Devuelve null en caso de error
         }
     }
 

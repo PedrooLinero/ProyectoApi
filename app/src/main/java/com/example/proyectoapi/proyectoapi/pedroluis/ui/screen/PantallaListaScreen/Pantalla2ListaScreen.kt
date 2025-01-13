@@ -25,11 +25,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.ui.text.style.TextAlign
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Pantalla3
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pantalla2Screen(
     navegarAPantalla1: () -> Unit,
+    navegarAPantalla3: (String) -> Unit,
     usuario: String,
     pantalla2ViewModel: Pantalla2ViewModel
 ) {
@@ -134,7 +136,7 @@ fun Pantalla2Screen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(bebidasState.value) { bebida ->
-                        CocktailCard(bebida)
+                        CocktailCard(bebida, navegarAPantalla3 = navegarAPantalla3)
                     }
                 }
             }
@@ -143,10 +145,8 @@ fun Pantalla2Screen(
 }
 
 
-
-
 @Composable
-fun CocktailCard(bebida: Drink) {
+fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
     // Fondo blanco para los cards
     val cardBackgroundColor = Color.White
 
@@ -154,7 +154,7 @@ fun CocktailCard(bebida: Drink) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable { /* Acción al hacer clic en un cóctel */ }
+            .clickable { navegarAPantalla3(bebida.idDrink) }
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = cardBackgroundColor) // Fondo blanco

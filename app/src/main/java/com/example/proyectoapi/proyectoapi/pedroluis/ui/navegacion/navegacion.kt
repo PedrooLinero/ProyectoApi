@@ -27,10 +27,28 @@ fun Navegacion() {
         composable<Pantalla2> { backStackEntry ->
             val usuario = backStackEntry.toRoute<Pantalla2>().usuario
             Pantalla2Screen(
-                navegarAPantalla1 = { navController.popBackStack() },
+                navegarAPantalla1 = { navController.popBackStack(Pantalla1, inclusive = false ) },
                 usuario = usuario,  // Pasamos el parámetro usuario
-                pantalla2ViewModel = pantalla2ViewModel // Ahora se pasa el ViewModel correctamente
+                pantalla2ViewModel = pantalla2ViewModel,
+                navegarAPantalla3 = { idDrink ->
+                    navController.navigate(Pantalla3(idDrink, usuario))
+                }
             )
+        }
+
+        composable<Pantalla3> {backStackEntry ->
+            val idDrink = backStackEntry.toRoute<Pantalla3>().idDrink
+            Pantalla3DetalleScreen(
+                idDrink = idDrink,
+                usuario = backStackEntry.toRoute<Pantalla3>().usuario,
+            ) {
+                navController.navigate(Pantalla2(backStackEntry.toRoute<Pantalla3>().usuario)) {
+                    popUpTo(Pantalla2(backStackEntry.toRoute<Pantalla3>().usuario)) {
+                        inclusive = true
+                    }
+                }
+            }
         }
     }
 }
+

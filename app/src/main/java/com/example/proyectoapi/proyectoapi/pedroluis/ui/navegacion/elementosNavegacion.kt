@@ -9,4 +9,5 @@ object Pantalla1
 data class Pantalla2(val usuario: String)
 
 @Serializable
-data class Pantalla3(val usuario: String, val id: String)
+data class Pantalla3(val idDrink: String, val usuario: String)
+
