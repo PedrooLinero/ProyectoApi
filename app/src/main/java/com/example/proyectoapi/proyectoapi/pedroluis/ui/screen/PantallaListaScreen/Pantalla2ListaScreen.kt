@@ -25,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.ui.text.style.TextAlign
-import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Pantalla3
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
