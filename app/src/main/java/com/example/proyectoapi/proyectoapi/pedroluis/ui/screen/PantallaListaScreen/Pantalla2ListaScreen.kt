@@ -86,10 +86,7 @@ fun Pantalla2Screen(
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.White
-                )
+                modifier = Modifier.fillMaxWidth()
             )
         }
     ) { innerPadding ->

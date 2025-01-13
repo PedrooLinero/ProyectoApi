@@ -1,7 +1,6 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.data.repositories
 
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Drink
-import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.RemoteConnection
 
 object repositoryList {
 
@@ -9,7 +8,7 @@ object repositoryList {
     suspend fun getListaBebidas(): List<Drink> {
         return try {
             val response = RemoteConnection.remoteService.getDrinks()
-            response.drinks ?: emptyList() // Devuelve una lista vacía si no hay bebidas
+            response.drinks  // Devuelve una lista vacía si no hay bebidas
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList() // Devuelve una lista vacía en caso de error
