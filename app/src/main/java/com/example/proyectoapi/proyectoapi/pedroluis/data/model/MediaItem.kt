@@ -1,6 +1,7 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.data.model
 
-data class Drink(
+
+data class MediaItem(
     val dateModified: String,
     val idDrink: String,
     val strAlcoholic: String,
@@ -53,3 +54,4 @@ data class Drink(
     val strTags: String,
     val strVideo: String
 )
+

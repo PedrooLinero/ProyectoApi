@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Drink
+import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.Drink
 import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.repositoryList
 
 @OptIn(ExperimentalMaterial3Api::class)

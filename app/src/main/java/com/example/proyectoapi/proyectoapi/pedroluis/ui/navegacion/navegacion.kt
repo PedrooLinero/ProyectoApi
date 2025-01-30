@@ -8,7 +8,7 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Pantalla1
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Pantalla2
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Pantalla3
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1Screen
-import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.Pantalla2ViewModel
+import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Pantalla2ViewModel
 
 @Composable
 fun Navegacion() {

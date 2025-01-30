@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Drink
-import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.Pantalla2ViewModel
+import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.Drink
+import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Pantalla2ViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle

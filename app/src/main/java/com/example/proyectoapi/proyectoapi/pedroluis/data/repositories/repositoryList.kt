@@ -1,6 +1,6 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.data.repositories
 
-import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Drink
+import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.Drink
 
 object repositoryList {
 
