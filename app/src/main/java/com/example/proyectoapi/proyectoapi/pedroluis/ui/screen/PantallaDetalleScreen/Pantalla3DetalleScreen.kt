@@ -194,7 +194,7 @@ fun Pantalla3DetalleScreen(
                     fontFamily = FontFamily.Serif
                 )
 
-                // Instrucciones del cóctel centradas
+                // Instrucciones del cóctel
                 Text(
                     text = bebida.strInstructionsES,
                     fontSize = 17.sp,
