@@ -47,13 +47,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.proyectoapi.proyectoapi.pedroluis.R
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
-import com.manuelsantos.tiendamanuel.R
-import com.manuelsantos.tiendamanuel.data.firebase.AuthManager
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(auth: AuthManager, navigateToLogin: () -> Unit) {
+fun Pantalla1SignUpScreen(auth: AuthManager, navigateToLogin: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var usuario by remember { mutableStateOf("") }
     var passwd by remember { mutableStateOf("") }
@@ -96,7 +95,7 @@ fun SignUpScreen(auth: AuthManager, navigateToLogin: () -> Unit) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = stringResource(R.string.title_login),
+                    text = "Nightcap Lounge",
                     style = MaterialTheme.typography.titleLarge,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
@@ -171,7 +170,7 @@ fun SignUpScreen(auth: AuthManager, navigateToLogin: () -> Unit) {
                             strokeWidth = 3.dp
                         )
                     } else {
-                        Text(stringResource(R.string.sign_up))
+                        Text("Registrarse")
                     }
                 }
             }

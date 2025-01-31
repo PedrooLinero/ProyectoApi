@@ -8,8 +8,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,30 +17,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.Drink
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Pantalla2ViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.style.TextAlign
+import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
+import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pantalla2Screen(
-    navegarAPantalla1: () -> Unit, // Función para navegar a la pantalla 1
-    navegarAPantalla3: (String) -> Unit, // Función para navegar a la pantalla 3
-    usuario: String, // Nombre del usuario
-    pantalla2ViewModel: Pantalla2ViewModel // ViewModel de la pantalla 2
+    authManager: AuthManager,
+    viewModel: Pantalla2ViewModel,
+    navegarAPantalla1: (Any?) -> Unit,
+    navegarAPantalla3: (String) -> Unit
 ) {
 
-    // Obtener el estado de las bebidas desde el ViewModel
-    val bebidasState: State<List<Drink>> =
-        pantalla2ViewModel.bebidas.collectAsState(initial = emptyList())
+    val lista by viewModel.bebidas.observeAsState(emptyList())
+    val progressBar by viewModel.progressBar.observeAsState(false)
+    val user = authManager.getCurrentUser()
 
     // Scaffold con la AppBar y el contenido de la pantalla
     Scaffold(
         // TopBar para mostrar el título y el menú de usuario
         topBar = {
+
+            val nombre = if (user?.email == null) {
+                "Invitado"
+            } else {
+                user.displayName?.split(" ")?.firstOrNull() ?: "Usuario"
+            }
+
             TopAppBar(
                 title = {
                     Box(modifier = Modifier.fillMaxWidth()) {
@@ -61,7 +69,7 @@ fun Pantalla2Screen(
 
                 // Navegar a la pantalla 1 al hacer clic en el botón de retroceso
                 navigationIcon = {
-                    IconButton(onClick = { navegarAPantalla1() }) {
+                    IconButton(onClick = { navegarAPantalla1(String) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Volver",
@@ -77,7 +85,7 @@ fun Pantalla2Screen(
                         modifier = Modifier.padding(end = 16.dp)
                     ) {
                         Text(
-                            text = usuario,
+                            text = nombre,
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 16.sp,
                                 color = Color(0xFF333333)
@@ -124,17 +132,6 @@ fun Pantalla2Screen(
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 16.dp)
             )
-
-            // Mostrar los cards de bebidas
-            if (bebidasState.value.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    // Mostrar un CircularProgressIndicator mientras se cargan las bebidas
-                    CircularProgressIndicator()
-                }
-            } else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -142,8 +139,8 @@ fun Pantalla2Screen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     // Iterar sobre la lista de bebidas y mostrar un card para cada una de ellas
-                    items(bebidasState.value) { bebida ->
-                        CocktailCard(bebida, navegarAPantalla3 = navegarAPantalla3)
+                    items(lista) { mediaItem ->
+                        CocktailCard(mediaItem, navegarAPantalla3 = navegarAPantalla3)
                     }
                 }
             }
@@ -153,7 +150,7 @@ fun Pantalla2Screen(
 
 // Card para mostrar la información de una bebida
 @Composable
-fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
+fun CocktailCard(mediaItem: MediaItem, navegarAPantalla3: (String) -> Unit) {
     // Fondo blanco para los cards
     val cardBackgroundColor = Color.White
 
@@ -161,7 +158,7 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable { navegarAPantalla3(bebida.idDrink) }
+            .clickable { navegarAPantalla3(mediaItem.idDrink) }
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
@@ -176,8 +173,8 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
                     .aspectRatio(1f)
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(bebida.strDrinkThumb),
-                    contentDescription = "Imagen de ${bebida.strDrink}",
+                    painter = rememberAsyncImagePainter(mediaItem.strDrinkThumb),
+                    contentDescription = "Imagen de ${mediaItem.strDrink}",
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 200.dp),
@@ -188,7 +185,7 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = bebida.strDrink,
+                text = mediaItem.strDrink,
                 modifier = Modifier.padding(horizontal = 12.dp),
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold,
@@ -205,7 +202,7 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Categoría: ${bebida.strCategory}",
+                    text = "Categoría: ${mediaItem.strCategory}",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
@@ -217,7 +214,7 @@ fun CocktailCard(bebida: Drink, navegarAPantalla3: (String) -> Unit) {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
-                    text = "Alcohol: ${if (bebida.strAlcoholic == "Alcoholic") "Sí" else "No"}",
+                    text = "Alcohol: ${if (mediaItem.strAlcoholic == "Alcoholic") "Sí" else "No"}",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,

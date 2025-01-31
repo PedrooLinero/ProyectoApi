@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -41,7 +43,7 @@ import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import kotlinx.coroutines.launch
 
 @Composable
-fun ForgotPasswordScreen(auth: AuthManager, navigateToLogin: () -> Unit) {
+fun Pantalla1ForgotPasswordScreen(auth: AuthManager, navigateToLogin: () -> Unit) {
     var email by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current

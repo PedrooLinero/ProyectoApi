@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("plugin.serialization") version "1.9.0"
-
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -52,6 +53,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.bom)
+    implementation(libs.google.firebase.analytics)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -61,10 +64,10 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.common.ktx)
-    implementation(libs.firebase.auth.ktx)
+
     implementation(libs.androidx.media3.common.ktx)
     implementation(libs.runtime.livedata)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,11 +78,19 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.navigation.compose.v285)
-    implementation (libs.material)// Dependencia de Material2
-    implementation (libs.coil) // Dependencia de Coil
+    implementation(libs.material)
+    implementation(libs.coil)
 
+    implementation(libs.icon.extended)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.runtime.livedata)
 
+    implementation(libs.play.services.auth)
 
+    implementation(libs.firebase.analytics.v2100)
+
+    implementation(libs.firebase.bom.v3100) // Usa la versión más reciente de BoM
+    implementation(libs.com.google.firebase.firebase.analytics)
 
 }
