@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "852180181696",
-    "project_id": "proyectoapi-9608a",
-    "storage_bucket": "proyectoapi-9608a.firebasestorage.app"
+    "project_number": "689208386096",
+    "project_id": "proyectoapi-d5eaf",
+    "storage_bucket": "proyectoapi-d5eaf.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:852180181696:android:391f4333b1f290c986c325",
+        "mobilesdk_app_id": "1:689208386096:android:3344f95853c8769f8203f5",
         "android_client_info": {
           "package_name": "com.example.proyectoapi.proyectoapi.pedroluis"
         }
       },
       "oauth_client": [
         {
-          "client_id": "852180181696-i783e26s4bri5c25q7r389cuocfedmob.apps.googleusercontent.com",
+          "client_id": "689208386096-2ekdgqjsr7cjua6pdtjl87qb9j236fl4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.proyectoapi.proyectoapi.pedroluis",
-            "certificate_hash": "888cc310add1b6f5192a3e91de9fdff2e76f6978"
+            "certificate_hash": "2414c5362ef5ec076bbeec61ca52a6213c484776"
           }
         },
         {
-          "client_id": "852180181696-s1ukdeh7u8gkd1s1dguf3j33niggavrn.apps.googleusercontent.com",
+          "client_id": "689208386096-uvmv1rlpdp52b86gsjq2aras1br7om08.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBGXXuonw90uAMp1AjL3m24x6LgfiB-DiY"
+          "current_key": "AIzaSyCenWeoIJfUipGr81m1Ywj2i4xgjfCc5bI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "852180181696-s1ukdeh7u8gkd1s1dguf3j33niggavrn.apps.googleusercontent.com",
+              "client_id": "689208386096-uvmv1rlpdp52b86gsjq2aras1br7om08.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

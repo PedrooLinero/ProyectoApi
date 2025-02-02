@@ -5,15 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.RemoteConnection
-import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.Drink
 import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.toMediaItem
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.MutableStateFlow
 
 // ViewModel encargado de gestionar la lista de bebidas
 class Pantalla2ViewModel : ViewModel() {
-    private val _bebidas = MutableStateFlow<List<Drink>>(emptyList()) // Lista vacía por defecto
-    val bebidas: MutableStateFlow<List<Drink>> = _bebidas
+    private val _bebidas: MutableLiveData<List<MediaItem>> = MutableLiveData()
+    val bebidas: LiveData<List<MediaItem>> = _bebidas
 
     private val _producto: MutableLiveData<MediaItem> = MutableLiveData()
     val producto: LiveData<MediaItem> = _producto
@@ -26,7 +24,7 @@ class Pantalla2ViewModel : ViewModel() {
         _progressBar.value = true
         viewModelScope.launch() { // Lanzamiento de la corrutina
             val listaBebidas = RemoteConnection.remoteService.getDrinks()
-            _bebidas.value = listaBebidas
+            _bebidas.value = listOf(listaBebidas.toMediaItem())
             _progressBar.value = false
         }
     }

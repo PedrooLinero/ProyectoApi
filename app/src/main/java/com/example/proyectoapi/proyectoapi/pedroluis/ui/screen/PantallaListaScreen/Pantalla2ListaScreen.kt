@@ -146,7 +146,6 @@ fun Pantalla2Screen(
             }
         }
     }
-}
 
 // Card para mostrar la información de una bebida
 @Composable

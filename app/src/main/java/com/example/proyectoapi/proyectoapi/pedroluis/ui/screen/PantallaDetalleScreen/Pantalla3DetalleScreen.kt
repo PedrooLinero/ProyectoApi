@@ -178,16 +178,7 @@ fun Pantalla3DetalleScreen(
                         it.strIngredient3,
                         it.strIngredient4,
                         it.strIngredient5,
-                        it.strIngredient6,
-                        it.strIngredient7,
-                        it.strIngredient8,
-                        it.strIngredient9,
-                        it.strIngredient10,
-                        it.strIngredient11,
-                        it.strIngredient12,
-                        it.strIngredient13,
-                        it.strIngredient14,
-                        it.strIngredient15
+                        it.strIngredient6
                     ).filterNotNull() // Filtra los ingredientes nulos
 
                     ListaIngredientes(strIngredientes) // Muestra la lista de ingredientes
