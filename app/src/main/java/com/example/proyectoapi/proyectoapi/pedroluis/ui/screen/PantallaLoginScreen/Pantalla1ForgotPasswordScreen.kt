@@ -75,12 +75,6 @@ fun Pantalla1ForgotPasswordScreen(auth: AuthManager, navigateToLogin: () -> Unit
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                Image(
-//                    painter = painterResource(),
-//                    contentDescription = "Logo Telares del sur",
-//                    modifier = Modifier.size(200.dp)
-//                )
-
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(

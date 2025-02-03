@@ -1,8 +1,9 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model
 
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class bebidas(
     val dateModified: String?, // Ahora es nullable
     val idDrink: String,
@@ -34,51 +35,7 @@ data class bebidas(
     val strMeasure6: String?,
     val strTags: String?,
     val strVideo: String?
-) : List<Drink> {
-    override val size: Int
-        get() = TODO("Not yet implemented")
-
-    override fun get(index: Int): Drink {
-        TODO("Not yet implemented")
-    }
-
-    override fun isEmpty(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun iterator(): Iterator<Drink> {
-        TODO("Not yet implemented")
-    }
-
-    override fun listIterator(): ListIterator<Drink> {
-        TODO("Not yet implemented")
-    }
-
-    override fun listIterator(index: Int): ListIterator<Drink> {
-        TODO("Not yet implemented")
-    }
-
-    override fun subList(fromIndex: Int, toIndex: Int): List<Drink> {
-        TODO("Not yet implemented")
-    }
-
-    override fun lastIndexOf(element: Drink): Int {
-        TODO("Not yet implemented")
-    }
-
-    override fun indexOf(element: Drink): Int {
-        TODO("Not yet implemented")
-    }
-
-    override fun containsAll(elements: Collection<Drink>): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun contains(element: Drink): Boolean {
-        TODO("Not yet implemented")
-    }
-
-}
+)
 
 
 fun bebidas.toMediaItem() = MediaItem(

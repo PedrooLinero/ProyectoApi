@@ -92,4 +92,7 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.analytics)
+
+    implementation(libs.play.services.auth.v1920)
+
 }

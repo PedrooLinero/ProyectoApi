@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Pantalla2ViewModel
-import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.Drink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

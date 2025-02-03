@@ -19,23 +19,31 @@ class Pantalla2ViewModel : ViewModel() {
     private val _progressBar: MutableLiveData<Boolean> = MutableLiveData(false)
     val progressBar: LiveData<Boolean> = _progressBar
 
-    // Función para obtener las bebidas de la API
     fun cargarBebidas() {
         _progressBar.value = true
-        viewModelScope.launch() { // Lanzamiento de la corrutina
-            val listaBebidas = RemoteConnection.remoteService.getDrinks()
-            _bebidas.value = listOf(listaBebidas.toMediaItem())
-            _progressBar.value = false
+        viewModelScope.launch {
+            try {
+                val response = RemoteConnection.remoteService.getDrinks()
+                _bebidas.value = response.drinks.map { it.toMediaItem() }
+            } catch (e: Exception) {
+                // Manejo de errores
+            } finally {
+                _progressBar.value = false
+            }
         }
     }
 
     fun cargarBebidaId(id: String) {
         _progressBar.value = true
-        viewModelScope.launch() {
-            val bebidaPorId = RemoteConnection.remoteService.getDrinks()
-            _producto.value = bebidaPorId.toMediaItem()
-            _progressBar.value = false
+        viewModelScope.launch {
+            try {
+                val response = RemoteConnection.remoteService.getDrinkById(id)
+                _producto.value = response.drinks.firstOrNull()?.toMediaItem()
+            } catch (e: Exception) {
+                // Manejo de errores
+            } finally {
+                _progressBar.value = false
+            }
         }
-
     }
 }
