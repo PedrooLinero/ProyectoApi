@@ -251,40 +251,18 @@ fun BotonesGoogle(
         )
     ) {
         if (cargando) {
-           // if (icon == R.drawable.ic_incognito) {
-                CircularProgressIndicator(
-                    color = Color.White,
-                    modifier = Modifier.size(30.dp),
-                    strokeWidth = 3.dp
-                )
-            } else {
-                CircularProgressIndicator(
-                    color = Color.Black,
-                    modifier = Modifier.size(30.dp),
-                    strokeWidth = 3.dp
-                )
-            }
-//        } else {
-//            Row(
-//                modifier = Modifier
-//                    .padding(start = 6.dp, end = 8.dp, top = 6.dp, bottom = 6.dp)
-//                    .fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.Center
-//            ) {
-//                Icon(
-//                    painter = painterResource(id = icon),
-//                    modifier = Modifier.size(24.dp),
-//                    contentDescription = text,
-//                    tint = Color.Unspecified
-//                )
-//                Spacer(modifier = Modifier.width(8.dp))
-//                Text(
-//                    text = text,
-//                    color = if (icon == R.drawable.ic_incognito) Color.White else Color.Black
-//                )
-//            }
-//        }
+            CircularProgressIndicator(
+                color = Color.White,
+                modifier = Modifier.size(30.dp),
+                strokeWidth = 3.dp
+            )
+        } else {
+            CircularProgressIndicator(
+                color = Color.Black,
+                modifier = Modifier.size(30.dp),
+                strokeWidth = 3.dp
+            )
+        }
     }
 }
 

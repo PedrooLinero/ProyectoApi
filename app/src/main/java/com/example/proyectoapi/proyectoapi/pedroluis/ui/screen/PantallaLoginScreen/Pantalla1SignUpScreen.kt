@@ -86,11 +86,6 @@ fun Pantalla1SignUpScreen(auth: AuthManager, navigateToLogin: () -> Unit) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                Image(
-//                    painter = painterResource(id = R.drawable.logo_tienda),
-//                    contentDescription = "Logo NightCap Lounge",
-//                    modifier = Modifier.size(200.dp)
-//                )
 
                 Spacer(modifier = Modifier.height(10.dp))
 
