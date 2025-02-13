@@ -40,6 +40,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.example.proyectoapi.proyectoapi.pedroluis.R
 
 
 @Composable
@@ -211,7 +212,7 @@ fun Pantalla1Screen(
                         }
                     },
                     text = "Continuar como invitado",
-                    //icon = R.drawable.ic_incognito,
+                    icon = R.drawable.ic_incognito,
                     color = Color(0xFF363636),
                     cargando = auth.progressBarAnonimous.observeAsState().value ?: false
                 )
@@ -223,7 +224,7 @@ fun Pantalla1Screen(
                         googleSignLauncher.launch(auth.getGoogleSignInIntent())
                     },
                     text = "Continuar con Google",
-                    //icon = R.drawable.ic_google,
+                    icon = R.drawable.ic_google,
                     color = Color(0xFFF1F1F1),
                     cargando = auth.progressBarGoogle.observeAsState().value ?: false
                 )
@@ -237,7 +238,7 @@ fun Pantalla1Screen(
 fun BotonesGoogle(
     onClick: () -> Unit,
     text: String,
-    //icon: Int,
+    icon: Int,
     color: Color,
     cargando: Boolean
 ) {
@@ -251,17 +252,39 @@ fun BotonesGoogle(
         )
     ) {
         if (cargando) {
-            CircularProgressIndicator(
-                color = Color.White,
-                modifier = Modifier.size(30.dp),
-                strokeWidth = 3.dp
-            )
+            if (icon == R.drawable.ic_incognito) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(30.dp),
+                    strokeWidth = 3.dp
+                )
+            } else {
+                CircularProgressIndicator(
+                    color = Color.Black,
+                    modifier = Modifier.size(30.dp),
+                    strokeWidth = 3.dp
+                )
+            }
         } else {
-            CircularProgressIndicator(
-                color = Color.Black,
-                modifier = Modifier.size(30.dp),
-                strokeWidth = 3.dp
-            )
+            Row(
+                modifier = Modifier
+                    .padding(start = 6.dp, end = 8.dp, top = 6.dp, bottom = 6.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = icon),
+                    modifier = Modifier.size(24.dp),
+                    contentDescription = text,
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = text,
+                    color = if (icon == R.drawable.ic_incognito) Color.White else Color.Black
+                )
+            }
         }
     }
 }
@@ -280,5 +303,6 @@ suspend fun signAnonimously(auth: AuthManager) {
     auth.signOut()
     auth.signAnonimously()
 }
+
 
 

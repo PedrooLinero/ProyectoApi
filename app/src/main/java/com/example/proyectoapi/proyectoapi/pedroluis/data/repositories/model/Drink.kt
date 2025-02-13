@@ -1,5 +1,6 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model
 
+import bebidas
 import kotlinx.serialization.Serializable
 
 @Serializable

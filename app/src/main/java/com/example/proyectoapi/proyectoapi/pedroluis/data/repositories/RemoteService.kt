@@ -1,7 +1,6 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.data.repositories
 
 import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.DrinkResponse
-import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model.bebidas
 import retrofit2.http.GET
 import retrofit2.http.Path
 

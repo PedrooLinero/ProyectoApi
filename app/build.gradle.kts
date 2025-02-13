@@ -95,4 +95,7 @@ dependencies {
 
     implementation(libs.play.services.auth.v1920)
 
+    implementation(libs.coil.compose.v240)
+
+
 }

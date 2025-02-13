@@ -57,13 +57,13 @@ fun Navegacion(auth : AuthManager) {
 
         composable<Pantalla2> {
             Pantalla2Screen(auth, viewModel,
-                {id ->
-                    navController.navigate(Pantalla3(id.toString()))
-                },
                 {
                     navController.navigate(Pantalla1) {
                         popUpTo(Pantalla2) { inclusive = true }
                     }
+                },
+                {
+                    navController.navigate(Pantalla3(it))
                 }
             )
         }

@@ -1,11 +1,9 @@
-package com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.model
-
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class bebidas(
-    val dateModified: String?, // Ahora es nullable
+    val dateModified: String?,
     val idDrink: String,
     val strAlcoholic: String,
     val strCategory: String,
@@ -13,10 +11,10 @@ data class bebidas(
     val strDrink: String,
     val strDrinkThumb: String,
     val strGlass: String,
-    val strIBA: String,
+    val strIBA: String?,
     val strImageAttribution: String,
     val strImageSource: String,
-    val strIngredient1: String?, // También nullable
+    val strIngredient1: String?,
     val strIngredient2: String?,
     val strIngredient3: String?,
     val strIngredient4: String?,
@@ -37,7 +35,6 @@ data class bebidas(
     val strVideo: String?
 )
 
-
 fun bebidas.toMediaItem() = MediaItem(
     idDrink = idDrink,
     strAlcoholic = strAlcoholic,
@@ -46,12 +43,12 @@ fun bebidas.toMediaItem() = MediaItem(
     strDrink = strDrink,
     strDrinkThumb = strDrinkThumb,
     strGlass = strGlass,
-    strIBA = strIBA,
+    strIBA = strIBA ?: "No disponible", // Valor predeterminado si es null
     strImageAttribution = strImageAttribution,
     strImageSource = strImageSource,
-    strIngredient1 = strIngredient1 ?: "Ingrediente desconocido", // Valor predeterminado para strIngredient1
-    strIngredient2 = strIngredient2 ?: "Ingrediente desconocido",  // Valor predeterminado para strIngredient2
-    strIngredient3 = strIngredient3 ?: "Ingrediente desconocido", // Y así sucesivamente...
+    strIngredient1 = strIngredient1 ?: "Ingrediente desconocido",
+    strIngredient2 = strIngredient2 ?: "Ingrediente desconocido",
+    strIngredient3 = strIngredient3 ?: "Ingrediente desconocido",
     strIngredient4 = strIngredient4 ?: "Ingrediente desconocido",
     strIngredient5 = strIngredient5 ?: "Ingrediente desconocido",
     strIngredient6 = strIngredient6 ?: "Ingrediente desconocido",
@@ -68,8 +65,5 @@ fun bebidas.toMediaItem() = MediaItem(
     strMeasure6 = strMeasure6 ?: "Medida desconocida",
     strTags = strTags ?: "Sin etiquetas",
     strVideo = strVideo ?: "Sin video",
-    dateModified = dateModified ?: "Fecha desconocida" // Valor predeterminado para dateModified
+    dateModified = dateModified ?: "Fecha desconocida"
 )
-
-
-
