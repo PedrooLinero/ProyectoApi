@@ -20,6 +20,7 @@ runtimeLivedata = "1.7.7"
 kotlinxSerializationJson = "1.6.3"
 navigationCompose = "2.8.6"
 playServicesAuth = "20.1.0"
+firebaseFirestoreKtx = "25.1.2"
 
 
 [libraries]
@@ -53,6 +54,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 
 [plugins]
