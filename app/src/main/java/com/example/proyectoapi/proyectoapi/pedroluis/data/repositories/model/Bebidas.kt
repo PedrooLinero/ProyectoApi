@@ -12,7 +12,7 @@ data class bebidas(
     val strDrinkThumb: String,
     val strGlass: String,
     val strIBA: String?,
-    val strImageAttribution: String,
+    val strImageAttribution: String?, // <-- Cambia esto a String?
     val strImageSource: String,
     val strIngredient1: String?,
     val strIngredient2: String?,
@@ -35,6 +35,8 @@ data class bebidas(
     val strVideo: String?
 )
 
+
+
 fun bebidas.toMediaItem() = MediaItem(
     idDrink = idDrink,
     strAlcoholic = strAlcoholic,
@@ -43,9 +45,9 @@ fun bebidas.toMediaItem() = MediaItem(
     strDrink = strDrink,
     strDrinkThumb = strDrinkThumb,
     strGlass = strGlass,
-    strIBA = strIBA ?: "No disponible", // Valor predeterminado si es null
-    strImageAttribution = strImageAttribution,
-    strImageSource = strImageSource,
+    strIBA = strIBA ?: "No disponible",
+    strImageAttribution = strImageAttribution ?: "Sin atribución", // <--- Evita null
+    strImageSource = strImageSource ?: "Sin fuente",
     strIngredient1 = strIngredient1 ?: "Ingrediente desconocido",
     strIngredient2 = strIngredient2 ?: "Ingrediente desconocido",
     strIngredient3 = strIngredient3 ?: "Ingrediente desconocido",
@@ -53,10 +55,10 @@ fun bebidas.toMediaItem() = MediaItem(
     strIngredient5 = strIngredient5 ?: "Ingrediente desconocido",
     strIngredient6 = strIngredient6 ?: "Ingrediente desconocido",
     strInstructions = strInstructions,
-    strInstructionsDE = strInstructionsDE,
-    strInstructionsES = strInstructionsES,
-    strInstructionsFR = strInstructionsFR,
-    strInstructionsIT = strInstructionsIT,
+    strInstructionsDE = strInstructionsDE ?: "Sin instrucciones",
+    strInstructionsES = strInstructionsES ?: "Sin instrucciones",
+    strInstructionsFR = strInstructionsFR ?: "Sin instrucciones",
+    strInstructionsIT = strInstructionsIT ?: "Sin instrucciones",
     strMeasure1 = strMeasure1 ?: "Medida desconocida",
     strMeasure2 = strMeasure2 ?: "Medida desconocida",
     strMeasure3 = strMeasure3 ?: "Medida desconocida",

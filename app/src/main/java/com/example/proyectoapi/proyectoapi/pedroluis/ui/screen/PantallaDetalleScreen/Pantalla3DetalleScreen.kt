@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Pantalla2ViewModel
@@ -31,13 +32,12 @@ import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Pantalla2ViewMod
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pantalla3DetalleScreen(
+    navController: NavController, // Agregar NavController
     authManager: AuthManager,
     viewModel: Pantalla2ViewModel,
-    navigateToBack: () -> Unit,
     navegarAPantalla1: () -> Unit,
 ) {
-
-    val bebida by viewModel.producto.observeAsState(null) // Usar null como valor inicial
+    val bebida by viewModel.producto.observeAsState(null)
     val progressBar by viewModel.progressBar.observeAsState(false)
     val usuario = authManager.getCurrentUser()
 
@@ -66,7 +66,7 @@ fun Pantalla3DetalleScreen(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navigateToBack() }) {
+                        IconButton(onClick = { navController.popBackStack() }) { // Usar popBackStack()
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Volver"
@@ -106,7 +106,6 @@ fun Pantalla3DetalleScreen(
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                // Card con la imagen
                 bebida?.let {
                     Card(
                         modifier = Modifier
@@ -115,7 +114,6 @@ fun Pantalla3DetalleScreen(
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.LightGray)
                     ) {
-                        // Imagen del cóctel
                         AsyncImage(
                             model = it.strDrinkThumb,
                             contentDescription = "Imagen de ${it.strDrink}",
@@ -136,7 +134,6 @@ fun Pantalla3DetalleScreen(
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily.Serif
                     )
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -232,6 +229,7 @@ fun Pantalla3DetalleScreen(
         }
     }
 }
+
 
 // Función para mostrar la lista de ingredientes
 @Composable

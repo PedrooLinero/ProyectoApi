@@ -40,7 +40,7 @@ class Pantalla2ViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RemoteConnection.remoteService.getDrinkById(id)
-                _producto.value = response.drinks.firstOrNull()?.toMediaItem()
+                _producto.value = response.drinks?.firstOrNull()?.toMediaItem()
                 Log.d("Pantalla2ViewModel", "Bebida cargada: ${_producto.value?.strDrink}")
             } catch (e: Exception) {
                 Log.e("Pantalla2ViewModel", "Error al cargar bebida por ID: ${e.message}")
@@ -49,4 +49,5 @@ class Pantalla2ViewModel : ViewModel() {
             }
         }
     }
+
 }

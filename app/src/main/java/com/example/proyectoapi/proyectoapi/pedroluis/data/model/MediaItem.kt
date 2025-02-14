@@ -10,7 +10,7 @@ data class MediaItem(
     val strDrinkThumb: String,
     val strGlass: String,
     val strIBA: String?, // Permitir valores nulos
-    val strImageAttribution: String,
+    val strImageAttribution: String?, // Permitir valores nulos
     val strImageSource: String,
     val strIngredient1: String?,
     val strIngredient2: String?,

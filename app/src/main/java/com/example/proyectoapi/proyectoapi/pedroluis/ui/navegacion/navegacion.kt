@@ -71,18 +71,12 @@ fun Navegacion(auth : AuthManager) {
         composable<Pantalla3> { backStackEntry ->
             val id = backStackEntry.toRoute<Pantalla3>().idDrink
             viewModel.cargarBebidaId(id)
-            Pantalla3DetalleScreen(auth, viewModel,
-                {
-                    navController.navigate(Pantalla2) {
-                        popUpTo(Pantalla3) { inclusive = true }
-                    }
-                },
-                {
-                    navController.navigate(Pantalla1) {
-                        popUpTo(Pantalla3) { inclusive = true }
-                    }
+            Pantalla3DetalleScreen(navController,auth, viewModel
+            ) {
+                navController.navigate(Pantalla2) {
+                    popUpTo(Pantalla3) { inclusive = true }
                 }
-                )
+            }
         }
    }
 }

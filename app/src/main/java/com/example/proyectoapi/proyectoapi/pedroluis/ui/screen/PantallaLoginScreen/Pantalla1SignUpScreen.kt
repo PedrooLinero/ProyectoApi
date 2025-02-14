@@ -66,6 +66,7 @@ fun Pantalla1SignUpScreen(auth: AuthManager, navigateToLogin: () -> Unit) {
                 Toast.makeText(context, "Usuario registrado", Toast.LENGTH_SHORT).show()
                 auth.resetAuthState()
                 navigateToLogin()
+
             }
             is AuthManager.AuthRes.Error -> {
                 Toast.makeText(context, (authState as AuthManager.AuthRes.Error).errorMessage, Toast.LENGTH_SHORT).show()
