@@ -34,8 +34,8 @@ class FirestoreManager(auth: AuthManager, context: Context) {
         return document.toObject(bebidas::class.java) ?: throw Exception("Producto no encontrado")
     }
 
-    suspend fun addProducto(bebida: bebidas) {
-        firestore.collection(PRODUCTOS).document(bebida.idDrink.toString()).set(bebida).await()
+    suspend fun addProducto(producto: bebidas) {
+        firestore.collection(PRODUCTOS).add(producto).await()
     }
 
     suspend fun deleteAllProducts() {

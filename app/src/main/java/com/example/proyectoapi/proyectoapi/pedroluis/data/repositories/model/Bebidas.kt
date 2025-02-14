@@ -33,7 +33,48 @@ data class bebidas(
     val strMeasure6: String?,
     val strTags: String?,
     val strVideo: String?
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is bebidas) return false
+
+        return idDrink == other.idDrink &&
+                dateModified == other.dateModified &&
+                strAlcoholic == other.strAlcoholic &&
+                strCategory == other.strCategory &&
+                strCreativeCommonsConfirmed == other.strCreativeCommonsConfirmed &&
+                strDrink == other.strDrink &&
+                strDrinkThumb == other.strDrinkThumb &&
+                strGlass == other.strGlass &&
+                strIBA == other.strIBA &&
+                strImageAttribution == other.strImageAttribution &&
+                strImageSource == other.strImageSource &&
+                strIngredient1 == other.strIngredient1 &&
+                strIngredient2 == other.strIngredient2 &&
+                strIngredient3 == other.strIngredient3 &&
+                strIngredient4 == other.strIngredient4 &&
+                strIngredient5 == other.strIngredient5 &&
+                strIngredient6 == other.strIngredient6 &&
+                strInstructions == other.strInstructions &&
+                strInstructionsDE == other.strInstructionsDE &&
+                strInstructionsES == other.strInstructionsES &&
+                strInstructionsFR == other.strInstructionsFR &&
+                strInstructionsIT == other.strInstructionsIT &&
+                strMeasure1 == other.strMeasure1 &&
+                strMeasure2 == other.strMeasure2 &&
+                strMeasure3 == other.strMeasure3 &&
+                strMeasure4 == other.strMeasure4 &&
+                strMeasure5 == other.strMeasure5 &&
+                strMeasure6 == other.strMeasure6 &&
+                strTags == other.strTags &&
+                strVideo == other.strVideo
+    }
+
+    override fun hashCode(): Int {
+        return idDrink.hashCode()
+    }
+
+}
 
 
 

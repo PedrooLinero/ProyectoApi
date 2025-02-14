@@ -2,7 +2,6 @@ package com.example.proyectoapi.proyectoapi.pedroluis.data.model
 
 import bebidas
 
-
 data class MediaItem(
     val idDrink: String,
     val strAlcoholic: String,

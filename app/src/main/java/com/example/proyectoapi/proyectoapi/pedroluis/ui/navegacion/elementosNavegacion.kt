@@ -9,6 +9,12 @@ object SignUp
 object ForgotPassword
 
 @Serializable
+object Perfil
+
+@Serializable
+object Carrito
+
+@Serializable
 object Pantalla1
 
 @Serializable

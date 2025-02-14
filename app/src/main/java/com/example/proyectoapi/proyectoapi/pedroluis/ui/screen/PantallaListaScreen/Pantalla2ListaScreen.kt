@@ -21,6 +21,7 @@ import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Pantalla2ViewMod
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -35,7 +36,9 @@ fun Pantalla2Screen(
     authManager: AuthManager,
     viewModel: Pantalla2ViewModel,
     navegarAPantalla1: () -> Unit,
-    navegarAPantalla3: (String) -> Unit
+    navegarAPantalla3: (String) -> Unit,
+    navigateToCarrito: () -> Unit,
+    navigateToProfile: () -> Unit
 ) {
     val lista by viewModel.bebidas.observeAsState(emptyList())
     val progressBar by viewModel.progressBar.observeAsState(false)
@@ -48,6 +51,7 @@ fun Pantalla2Screen(
     Scaffold(
         topBar = {
             val nombre = if (user?.email == null) "Invitado" else user.displayName?.split(" ")?.firstOrNull() ?: "Usuario"
+
             TopAppBar(
                 title = {
                     Text(
@@ -82,16 +86,33 @@ fun Pantalla2Screen(
                             )
                         )
                         Spacer(modifier = Modifier.width(8.dp))
+
+                        // Icono de Usuario
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = "Menú de usuario",
                             modifier = Modifier
                                 .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
-                                .padding(8.dp),
+                                .padding(8.dp)
+                                .clickable { navigateToProfile() }, // Acción para ir al perfil
+                            tint = Color(0xFF333333)
+                        )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        // Icono de Carrito
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Ir al carrito",
+                            modifier = Modifier
+                                .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
+                                .padding(8.dp)
+                                .clickable { navigateToCarrito() }, // Acción para ir al carrito
                             tint = Color(0xFF333333)
                         )
                     }
                 }
+
             )
         }
     ) { innerPadding ->
