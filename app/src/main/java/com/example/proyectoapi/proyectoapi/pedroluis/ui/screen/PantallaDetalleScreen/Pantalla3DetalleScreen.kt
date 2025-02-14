@@ -10,11 +10,8 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -168,14 +165,14 @@ fun Pantalla3DetalleScreen(
                     )
 
                     // Ingredientes
-                    val strIngredientes: List<Any> = listOf(
+                    val strIngredientes: List<String?> = listOf(
                         it.strIngredient1,
                         it.strIngredient2,
                         it.strIngredient3,
                         it.strIngredient4,
                         it.strIngredient5,
                         it.strIngredient6
-                    ).filterNotNull() // Filtra los ingredientes nulos
+                    ).filter { ingredient -> ingredient != null && ingredient != "Ingrediente desconocido" } // Filtra los ingredientes nulos o desconocidos
 
                     ListaIngredientes(strIngredientes) // Muestra la lista de ingredientes
 
@@ -233,7 +230,7 @@ fun Pantalla3DetalleScreen(
 
 // Función para mostrar la lista de ingredientes
 @Composable
-fun ListaIngredientes(ingredientes: List<Any>) {
+fun ListaIngredientes(ingredientes: List<String?>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
