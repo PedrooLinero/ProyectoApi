@@ -98,5 +98,7 @@ dependencies {
 
     implementation(libs.coil.compose.v240)
 
+    implementation (libs.androidx.hilt.navigation.compose)
+    implementation (libs.hilt.android)
 
 }

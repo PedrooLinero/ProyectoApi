@@ -1,10 +1,11 @@
-package com.example.proyectoapi.proyectoapi.pedroluis.data.model
+package com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.RemoteConnection
 import kotlinx.coroutines.launch
 import toMediaItem

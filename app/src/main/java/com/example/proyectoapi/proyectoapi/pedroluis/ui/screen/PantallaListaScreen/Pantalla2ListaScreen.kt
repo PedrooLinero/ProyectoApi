@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.proyectoapi.proyectoapi.pedroluis.data.model.Pantalla2ViewModel
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
@@ -88,28 +88,28 @@ fun Pantalla2Screen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         // Icono de Usuario
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Menú de usuario",
-                            modifier = Modifier
-                                .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
-                                .padding(8.dp)
-                                .clickable { navigateToProfile() }, // Acción para ir al perfil
-                            tint = Color(0xFF333333)
-                        )
-
-                        Spacer(modifier = Modifier.width(16.dp))
+                        IconButton(onClick = { navigateToProfile() }) {
+                            Icon(
+                                imageVector = Icons.Default.AccountCircle,
+                                contentDescription = "Menú de usuario",
+                                modifier = Modifier
+                                    .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
+                                    .padding(8.dp),
+                                tint = Color(0xFF333333)
+                            )
+                        }
 
                         // Icono de Carrito
-                        Icon(
-                            imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = "Ir al carrito",
-                            modifier = Modifier
-                                .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
-                                .padding(8.dp)
-                                .clickable { navigateToCarrito() }, // Acción para ir al carrito
-                            tint = Color(0xFF333333)
-                        )
+                        IconButton(onClick = { navigateToCarrito() }) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = "Ir al carrito",
+                                modifier = Modifier
+                                    .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
+                                    .padding(8.dp),
+                                tint = Color(0xFF333333)
+                            )
+                        }
                     }
                 }
 

@@ -2,6 +2,7 @@ package com.example.proyectoapi.proyectoapi.pedroluis.data.firebase
 
 import android.content.Context
 import bebidas
+import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.db.CarritoDB
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -72,7 +73,6 @@ class FirestoreManager(auth: AuthManager, context: Context) {
                         // Crea un objeto CarritoDB
                         CarritoDB(
                             idCliente = userId,
-                            cantidad = cantidad,
                             nombre = nombre,
                             imagen = imagen,
                             bebida = producto
@@ -86,7 +86,7 @@ class FirestoreManager(auth: AuthManager, context: Context) {
             .flowOn(Dispatchers.IO)
     }
 
-    suspend fun addCarrito(item: bebidas, userid: String) {
+    suspend fun addCarrito(item: MediaItem, userid: String) {
         val carritoRef = firestore.collection(CARRITO)
         val docId = "${userid}_${item.idDrink}" // ID compuesto único
 
@@ -104,7 +104,7 @@ class FirestoreManager(auth: AuthManager, context: Context) {
                 // Crear nuevo registro
                 val newItem = hashMapOf(
                     "idCliente" to userid,
-                    "idProducto" to item.idDrink.toString(),
+                    "idProducto" to item.idDrink,
                     "unidades" to 1,
                     "nombre" to item.strDrink,
                     "imagen" to item.strDrinkThumb
@@ -113,19 +113,4 @@ class FirestoreManager(auth: AuthManager, context: Context) {
             }
         }.await()
     }
-
-    suspend fun getNumeroElementosCarrito(userid: String?): Int? {
-        val documentos = firestore.collection(CARRITO)
-            .whereEqualTo("idCliente", userid)
-            .get()
-            .await()
-            .documents
-
-        return documentos.fold(0) { acumulador, documento ->
-            val unidades = documento.getLong("unidades")?.toInt() ?: 0
-            acumulador + unidades
-        }
-    }
-
-
 }

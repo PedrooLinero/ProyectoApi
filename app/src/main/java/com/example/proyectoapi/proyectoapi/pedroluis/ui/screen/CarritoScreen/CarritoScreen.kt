@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -15,13 +16,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import bebidas
+import coil.compose.AsyncImage
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreViewModel
 
@@ -30,12 +34,10 @@ import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreView
 fun CarritoScreen(
     auth: AuthManager,
     viewModel: FirestoreViewModel,
-    navigateToBack: () -> Unit,
-    navigateToLogin: () -> Unit,
+    navegarAPantalla2: () -> Unit,
     navigateToProfile: () -> Unit
 ) {
     val listaCarrito by viewModel.carrito.observeAsState(emptyList())
-    val progressBar by viewModel.isLoading.observeAsState(false)
     val user = auth.getCurrentUser()
     val context = LocalContext.current
 
@@ -54,6 +56,14 @@ fun CarritoScreen(
                             style = MaterialTheme.typography.titleLarge,
                             fontSize = 24.sp
                         )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navegarAPantalla2() }) { // Usar popBackStack()
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Volver"
+                            )
+                        }
                     },
                     actions = {
                         IconButton(
@@ -77,35 +87,29 @@ fun CarritoScreen(
                     .padding(innerPadding)
                     .padding(16.dp)
             ) {
-                if (progressBar) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                } else {
-                    Text(
-                        text = "Carrito de ${user.displayName?.split(" ")?.firstOrNull() ?: "Invitado"}",
-                        style = MaterialTheme.typography.displayMedium,
-                        fontSize = 40.sp
-                    )
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        items(listaCarrito) { producto ->
-                            GenerarLineaPedido(producto)
-                        }
+                Text(
+                    text = "Carrito de ${
+                        user.displayName?.split(" ")?.firstOrNull() ?: "Invitado"
+                    }",
+                    style = MaterialTheme.typography.displayMedium,
+                    fontSize = 40.sp
+                )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(listaCarrito) { producto ->
+                        GenerarLineaPedido(producto)
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun GenerarLineaPedido(producto: bebidas) {
@@ -181,11 +185,28 @@ fun GenerarLineaPedido(producto: bebidas) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = producto.strDrink, // Usamos el nombre de la bebida
-                style = MaterialTheme.typography.labelLarge,
-                fontSize = 18.sp
+            // Mostrar la imagen del cóctel
+            AsyncImage(
+                model = producto.strDrinkThumb, // URL de la imagen del cóctel
+                contentDescription = "Imagen de ${producto.strDrink}",
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.LightGray)
             )
+
+            // Información del cóctel
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = producto.strDrink, // Nombre del cóctel
+                    style = MaterialTheme.typography.labelLarge,
+                    fontSize = 18.sp
+                )
+
+            }
         }
     }
 }
+

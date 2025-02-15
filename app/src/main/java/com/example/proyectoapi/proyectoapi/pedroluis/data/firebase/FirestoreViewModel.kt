@@ -8,8 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import bebidas
-import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.db.CarritoDB
-import kotlinx.coroutines.flow.Flow
+import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 import kotlinx.coroutines.launch
 
 
@@ -57,26 +56,26 @@ class FirestoreViewModel(
     }
 
     // Comparar y sincronizar productos
-    suspend fun syncProducts(apiProducts: List<bebidas>) {  // Cambiado a List<ApiBebida> si es necesario
+    suspend fun syncProducts(apiProducts: List<MediaItem>) {  // Cambiado a List<ApiBebida> si es necesario
         viewModelScope.launch {
             _syncState.value = SyncState.Loading
             _isLoading.value = true
             try {
                 val firestoreProducts = _firestoreProducts.value ?: emptyList()
 
-//                // Convierte apiProducts si es necesario
-//                val apiProductosConvertidos = apiProducts.map { item ->
-//                    item.toBebidas()
-//                }
+                // Convierte apiProducts si es necesario
+                val apiProductosConvertidos = apiProducts.map { item ->
+                    item.toBebidas()
+                }
 
-//                if (debenSincronizarse(apiProductosConvertidos, firestoreProducts)) {
-//                    firestoreManager.deleteAllProducts()
-//                    apiProductosConvertidos.forEach { producto ->
-//                        firestoreManager.addProducto(producto)
-//                    }
-//                } else {
-//                    _syncState.value = SyncState.Success("No se necesitan cambios")
-//                }
+                if (debenSincronizarse(apiProductosConvertidos, firestoreProducts)) {
+                    firestoreManager.deleteAllProducts()
+                    apiProductosConvertidos.forEach { producto ->
+                        firestoreManager.addProducto(producto)
+                    }
+                } else {
+                    _syncState.value = SyncState.Success("No se necesitan cambios")
+                }
             } catch (e: Exception) {
                 _syncState.value = SyncState.Error(e)
             }
@@ -103,11 +102,11 @@ class FirestoreViewModel(
     }
 
 
-    fun addCarrito(item: bebidas, userid: String) {
+    fun addCarrito(mediaItem: MediaItem, userid: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                firestoreManager.addCarrito(item, userid)
+                firestoreManager.addCarrito(mediaItem, userid)
                 _numeroElementosCarrito.value = _numeroElementosCarrito.value?.plus(1) ?: 1
                 _syncState.value = SyncState.Success("Producto añadido al carrito")
             } catch (e: Exception) {
@@ -117,11 +116,6 @@ class FirestoreViewModel(
         _isLoading.value = false
     }
 
-    fun getNumeroElementosCarrito(userid: String?) {
-        viewModelScope.launch {
-            _numeroElementosCarrito.value = firestoreManager.getNumeroElementosCarrito(userid)
-        }
-    }
 
     fun getCarrito(userid: String?, context: Context) {
         _isLoading.value = true
