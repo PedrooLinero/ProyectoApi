@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
@@ -297,6 +296,7 @@ fun PedirCoctel(
     Button(
         onClick = {
             isClicked = !isClicked
+            // Llamamos a la función para añadir al carrito en Firestore
             viewModelFirestore.addCarrito(item, userid)
         },
         modifier = Modifier
@@ -318,4 +318,3 @@ fun PedirCoctel(
         )
     }
 }
-

@@ -22,9 +22,6 @@ class FirestoreViewModel(
     private val _firestoreProduct = MutableLiveData<bebidas>()
     val firestoreProduct: LiveData<bebidas> = _firestoreProduct
 
-    private val _numeroElementosCarrito = MutableLiveData<Int>()
-    val numeroElementosCarrito: LiveData<Int> = _numeroElementosCarrito
-
     private val _carrito = MutableLiveData<List<bebidas>>()
     val carrito: LiveData<List<bebidas>> = _carrito
 
@@ -102,18 +99,21 @@ class FirestoreViewModel(
     }
 
 
-    fun addCarrito(mediaItem: MediaItem, userid: String) {
+    fun addCarrito(item: MediaItem, userid: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                firestoreManager.addCarrito(mediaItem, userid)
-                _numeroElementosCarrito.value = _numeroElementosCarrito.value?.plus(1) ?: 1
+                firestoreManager.addCarrito(item, userid)
                 _syncState.value = SyncState.Success("Producto añadido al carrito")
             } catch (e: Exception) {
                 _syncState.value = SyncState.Error(e)
             }
         }
         _isLoading.value = false
+    }
+
+    fun recargarEstadoSync() {
+        _syncState.value = SyncState.Loading
     }
 
 

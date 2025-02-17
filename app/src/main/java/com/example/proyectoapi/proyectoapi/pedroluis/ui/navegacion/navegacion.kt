@@ -93,7 +93,7 @@ fun Navegacion(
         }
 
         composable<Pantalla2> {
-            Pantalla2Screen(auth, viewModel,
+            Pantalla2Screen(auth, viewModel, viewModelFirestore,
                 {
                     navController.navigate(Pantalla1) {
                         popUpTo(Pantalla2) { inclusive = true }
@@ -115,7 +115,7 @@ fun Navegacion(
             val id = backStackEntry.toRoute<Pantalla3>().idDrink
             viewModel.cargarBebidaId(id)
             Pantalla3DetalleScreen(
-                 auth, viewModel, viewModelFirestore,
+                auth, viewModel, viewModelFirestore,
                 {
                     navController.navigate(Pantalla2) {
                         popUpTo(Pantalla2) { inclusive = true }
