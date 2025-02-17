@@ -36,6 +36,7 @@ class Pantalla2ViewModel : ViewModel() {
         }
     }
 
+
     fun cargarBebidaId(id: String) {
         _progressBar.value = true
         viewModelScope.launch {

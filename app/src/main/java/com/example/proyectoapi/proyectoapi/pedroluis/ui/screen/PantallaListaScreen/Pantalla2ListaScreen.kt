@@ -1,4 +1,3 @@
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,10 +25,11 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
-import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreViewModel
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,40 +38,30 @@ import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 fun Pantalla2Screen(
     authManager: AuthManager,
     viewModelPantalla: Pantalla2ViewModel,
-    viewModel: FirestoreViewModel,
     navegarAPantalla1: () -> Unit,
     navegarAPantalla3: (String) -> Unit,
     navigateToCarrito: () -> Unit,
     navigateToProfile: () -> Unit
 ) {
-    val lista by viewModel.firestoreProducts.observeAsState(emptyList())
-    val syncState by viewModel.syncState.observeAsState()
-    val progressBar by viewModel.isLoading.observeAsState(false)
-    val context = LocalContext.current
+    val lista by viewModelPantalla.bebidas.observeAsState(emptyList())
+    val progressBar by viewModelPantalla.progressBar.observeAsState(false)
     val user = authManager.getCurrentUser()
 
-    LaunchedEffect(syncState) {
-        when(syncState) {
-            is FirestoreViewModel.SyncState.Success -> {
-                Toast.makeText(context, (syncState as FirestoreViewModel.SyncState.Success).message, Toast.LENGTH_SHORT).show()
-                viewModel.recargarEstadoSync()
-            }
-            is FirestoreViewModel.SyncState.Error -> {
-                Toast.makeText(
-                    context,
-                    "No se ha podido añadir al carrito, error: " + (syncState as FirestoreViewModel.SyncState.Error).exception.message,
-                    Toast.LENGTH_SHORT
-                ).show()
-                viewModel.recargarEstadoSync()
-            }
-            is FirestoreViewModel.SyncState.Loading -> {
+    var coctelesfavorites by remember { mutableStateOf<List<MediaItem>>(emptyList()) }
 
-            }
 
-            null -> {
+// Cargar bebidas al entrar a la pantalla
+    LaunchedEffect(Unit) {
+        viewModelPantalla.cargarBebidas()
+    }
 
-            }
-        }
+    val logout = {
+        authManager.signOut()
+        navegarAPantalla1()
+    }
+
+    val showFavorites = {
+        navigateToCarrito()
     }
 
     Scaffold(
@@ -171,10 +161,13 @@ fun Pantalla2Screen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(lista) { mediaItem ->
-                        if (user != null) {
-                            CocktailCard(mediaItem,viewModel, user.uid, navegarAPantalla3)
-                        }
+                    val coctelesToDisplay = if (coctelesfavorites.isEmpty()) lista else coctelesfavorites
+                    items(coctelesToDisplay) { item ->
+                        CocktailCard(
+                            item = item,
+                            idUsuario = user?.uid ?: "",
+                            navegarAPantalla3 = navegarAPantalla3
+                        )
                     }
                 }
             }
@@ -185,8 +178,7 @@ fun Pantalla2Screen(
 // Card para mostrar la información de una bebida
 @Composable
 fun CocktailCard(
-    item: bebidas,
-    viewModelFirestore: FirestoreViewModel,
+    item: MediaItem,
     idUsuario: String,
     navegarAPantalla3: (String) -> Unit
 ) {

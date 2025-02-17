@@ -8,9 +8,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -27,16 +29,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
+import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreManager
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
-import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreViewModel
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pantalla3DetalleScreen(
     authManager: AuthManager,
     viewModel: Pantalla2ViewModel,
-    viewModelFirestore: FirestoreViewModel,
+    firestoreManager: FirestoreManager = FirestoreManager(),
     navegarAPantalla2: () -> Unit,
     navigateToCarrito: () -> Unit,
     navigateToProfile: () -> Unit,
@@ -44,6 +49,10 @@ fun Pantalla3DetalleScreen(
     val bebida by viewModel.producto.observeAsState(null)
     val progressBar by viewModel.progressBar.observeAsState(false)
     val usuario = authManager.getCurrentUser()
+
+    LaunchedEffect(bebida) {
+        viewModel.cargarBebidas()
+    }
 
     if (progressBar) {
         Box(
@@ -96,7 +105,10 @@ fun Pantalla3DetalleScreen(
                                     imageVector = Icons.Default.AccountCircle,
                                     contentDescription = "Menú de usuario",
                                     modifier = Modifier
-                                        .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
+                                        .background(
+                                            Color.Gray.copy(alpha = 0.2f),
+                                            shape = CircleShape
+                                        )
                                         .padding(8.dp),
                                     tint = Color(0xFF333333)
                                 )
@@ -108,7 +120,10 @@ fun Pantalla3DetalleScreen(
                                     imageVector = Icons.Default.ShoppingCart,
                                     contentDescription = "Ir al carrito",
                                     modifier = Modifier
-                                        .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
+                                        .background(
+                                            Color.Gray.copy(alpha = 0.2f),
+                                            shape = CircleShape
+                                        )
                                         .padding(8.dp),
                                     tint = Color(0xFF333333)
                                 )
@@ -226,8 +241,8 @@ fun Pantalla3DetalleScreen(
 
                     MarcarComoFavorito(
                         item = it,
-                        userid = usuario?.uid ?: "",
-                        viewModelFirestore = viewModelFirestore
+                        firestoreManager = firestoreManager
+
                     )
                 }
             }
@@ -279,6 +294,7 @@ fun ListaIngredientes(ingredientes: List<String?>) {
                         color = Color(0xFFFF5722),
                         modifier = Modifier.padding(end = 16.dp)
                     )
+
                 }
             }
         }
@@ -290,40 +306,34 @@ fun ListaIngredientes(ingredientes: List<String?>) {
 @Composable
 fun MarcarComoFavorito(
     item: MediaItem, // Cambié 'bebidas' por 'MediaItem'
-    userid: String,
-    viewModelFirestore: FirestoreViewModel,
+    firestoreManager: FirestoreManager
 ) {
-    var isFavorito by remember { mutableStateOf(false) }
+    var isFavorite by remember { mutableStateOf(false) }
 
-    // Aquí vamos a modificar el estado, dependiendo de si ya está marcado como favorito
-    Button(
+    LaunchedEffect(Unit) {
+        val favorites = firestoreManager.getFavorites()
+        isFavorite = favorites.any { it.idDrink == item.idDrink }
+    }
+
+    IconButton(
         onClick = {
-            isFavorito = !isFavorito
-            if (isFavorito) {
-                // Si es favorito, lo agregamos a la base de datos
-                viewModelFirestore.marcarComoFavorito(item, userid)
-            } else {
-                // Si no es favorito, lo eliminamos de la base de datos
-                viewModelFirestore.eliminarFavorito(item, userid)
+            isFavorite = !isFavorite
+            CoroutineScope(Dispatchers.IO).launch {
+                if (isFavorite) {
+                    firestoreManager.addFavorite(item)
+                } else {
+                        item.idDrink?.let { firestoreManager.removeFavorite(it) } // Cambiado para enviar el objeto completo
+                }
             }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF7043))
+        }
     ) {
         Icon(
-            imageVector = Icons.Filled.Favorite,
-            contentDescription = "Marcar como favorito",
-            modifier = Modifier.padding(end = 8.dp)
-        )
-        Text(
-            text = if (isFavorito) "Desmarcar como favorito" else "Marcar como favorito",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
+            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            contentDescription = "Favorito",
+            tint = if (isFavorite) Color.Red else Color.Gray
         )
     }
+
+
 }
 
