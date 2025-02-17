@@ -18,7 +18,7 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Carrito
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.ForgotPassword
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Perfil
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.SignUp
-import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.CarritoScreen.CarritoScreen
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.FavoritoScreen.PantallaFavoritosScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1ForgotPasswordScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1SignUpScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PerfilScreen.PerfilScreen
@@ -133,7 +133,7 @@ fun Navegacion(
         // Asegúrate de definir la ruta Carrito
         // Define the route Carrito
         composable<Carrito> {
-            CarritoScreen(
+            PantallaFavoritosScreen(
                 auth,
                 viewModelFirestore,
                 {

@@ -9,6 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import bebidas
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
+import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.db.CarritoDB
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 
@@ -98,12 +101,12 @@ class FirestoreViewModel(
         return apiList.size != firestoreList.size || !apiList.containsAll(firestoreList)
     }
 
-
-    fun addCarrito(item: MediaItem, userid: String) {
+    fun addCarrito(item: bebidas, userid: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                firestoreManager.addCarrito(item, userid)
+                val mediaItem = convertBebidasToMediaItem(item)
+                firestoreManager.addCarrito(mediaItem, userid) // Ahora pasas un objeto de tipo 'MediaItem'
                 _syncState.value = SyncState.Success("Producto añadido al carrito")
             } catch (e: Exception) {
                 _syncState.value = SyncState.Error(e)
@@ -112,25 +115,70 @@ class FirestoreViewModel(
         _isLoading.value = false
     }
 
-    fun recargarEstadoSync() {
-        _syncState.value = SyncState.Loading
+    // Función para convertir 'bebidas' a 'MediaItem'
+    fun convertBebidasToMediaItem(bebida: bebidas): MediaItem {
+        return MediaItem(
+            idDrink = bebida.idDrink, // Asegúrate de que las propiedades sean las mismas
+            strDrink = bebida.strDrink, // Nombre de la bebida
+            strDrinkThumb = bebida.strDrinkThumb // URL de la imagen
+            // Agrega las demás propiedades si es necesario
+        )
     }
 
 
     fun getCarrito(userid: String?, context: Context) {
         _isLoading.value = true
         viewModelScope.launch {
+            val carrito: Flow<List<CarritoDB>>
             if (userid != null) {
-                firestoreManager.getCarrito(userid).collect { carritoDB ->
-                    _carrito.value = carritoDB.mapNotNull { it.bebida as? bebidas }
+                carrito = firestoreManager.getCarrito(userid)
+                carrito.collect { carritoDB ->
+                    _carrito.value = carritoDB.map {
+                        it.bebida
+                    }
                 }
             } else {
                 Toast.makeText(context, "Usuario no encontrado", Toast.LENGTH_SHORT).show()
             }
-            _isLoading.value = false
         }
+        _isLoading.value = false
     }
 
+
+//    fun marcarComoFavorito(item: MediaItem, userId: String) {
+//        val db = FirebaseFirestore.getInstance()
+//        val favoritoRef = db.collection("usuarios").document(userId).collection("favoritos").document(item.idDrink)
+//
+//        favoritoRef.set(item) // Guarda el cóctel como favorito
+//    }
+//
+//    fun eliminarFavorito(item: MediaItem, userId: String) {
+//        val db = FirebaseFirestore.getInstance()
+//        val favoritoRef = db.collection("usuarios").document(userId).collection("favoritos").document(item.idDrink)
+//
+//        favoritoRef.delete() // Elimina el cóctel de favoritos
+//    }
+//
+//    fun getFavoritos(userId: String): List<MediaItem> {
+//        val db = FirebaseFirestore.getInstance()
+//        val favoritosRef = db.collection("usuarios").document(userId).collection("favoritos")
+//        val favoritos = mutableListOf<MediaItem>()
+//
+//        // Aquí podemos hacer una consulta para obtener los favoritos del usuario
+//        favoritosRef.get().addOnSuccessListener { result ->
+//            for (document in result) {
+//                val coctel = document.toObject(MediaItem::class.java)
+//                favoritos.add(coctel)
+//            }
+//        }
+//
+//        return favoritos
+//    }
+
+
+    fun recargarEstadoSync() {
+        _syncState.value = SyncState.Loading
+    }
 
     class FirestoreViewModelFactory(
         private val firestoreManager: FirestoreManager

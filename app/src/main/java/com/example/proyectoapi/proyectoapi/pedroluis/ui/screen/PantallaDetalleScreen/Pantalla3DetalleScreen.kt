@@ -7,6 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -223,7 +224,7 @@ fun Pantalla3DetalleScreen(
                     // Botón para pedir el cóctel
                     Spacer(modifier = Modifier.weight(1f))
 
-                    PedirCoctel(
+                    MarcarComoFavorito(
                         item = it,
                         userid = usuario?.uid ?: "",
                         viewModelFirestore = viewModelFirestore
@@ -285,19 +286,26 @@ fun ListaIngredientes(ingredientes: List<String?>) {
 }
 
 // Funcion para pedir un coctel
+// Función para pedir un coctel y marcar como favorito
 @Composable
-fun PedirCoctel(
-    item: MediaItem, // Cambia bebidas por MediaItem
+fun MarcarComoFavorito(
+    item: MediaItem, // Cambié 'bebidas' por 'MediaItem'
     userid: String,
     viewModelFirestore: FirestoreViewModel,
 ) {
-    var isClicked by remember { mutableStateOf(false) }
+    var isFavorito by remember { mutableStateOf(false) }
 
+    // Aquí vamos a modificar el estado, dependiendo de si ya está marcado como favorito
     Button(
         onClick = {
-            isClicked = !isClicked
-            // Llamamos a la función para añadir al carrito en Firestore
-            viewModelFirestore.addCarrito(item, userid)
+            isFavorito = !isFavorito
+            if (isFavorito) {
+                // Si es favorito, lo agregamos a la base de datos
+                viewModelFirestore.marcarComoFavorito(item, userid)
+            } else {
+                // Si no es favorito, lo eliminamos de la base de datos
+                viewModelFirestore.eliminarFavorito(item, userid)
+            }
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -306,15 +314,16 @@ fun PedirCoctel(
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF7043))
     ) {
         Icon(
-            imageVector = Icons.Filled.ShoppingCart,
-            contentDescription = "Pedir Cóctel",
+            imageVector = Icons.Filled.Favorite,
+            contentDescription = "Marcar como favorito",
             modifier = Modifier.padding(end = 8.dp)
         )
         Text(
-            text = if (isClicked) "Quitar del carrito" else "Pedir el Cóctel",
+            text = if (isFavorito) "Desmarcar como favorito" else "Marcar como favorito",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
     }
 }
+
