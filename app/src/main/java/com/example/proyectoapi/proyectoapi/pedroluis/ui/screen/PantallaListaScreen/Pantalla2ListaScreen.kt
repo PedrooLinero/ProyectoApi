@@ -21,6 +21,8 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScre
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,14 +36,14 @@ import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun Pantalla2Screen(
     authManager: AuthManager,
     viewModelPantalla: Pantalla2ViewModel,
     navegarAPantalla1: () -> Unit,
     navegarAPantalla3: (String) -> Unit,
     navigateToCarrito: () -> Unit,
-    navigateToProfile: () -> Unit
+    navigateToProfile: () -> Unit,
+    navigateToCrearCoctel: () -> Unit // Añadimos la acción para navegar a la pantalla de creación de cóctel
 ) {
     val lista by viewModelPantalla.bebidas.observeAsState(emptyList())
     val progressBar by viewModelPantalla.progressBar.observeAsState(false)
@@ -49,8 +51,7 @@ fun Pantalla2Screen(
 
     var coctelesfavorites by remember { mutableStateOf<List<MediaItem>>(emptyList()) }
 
-
-// Cargar bebidas al entrar a la pantalla
+    // Cargar bebidas al entrar a la pantalla
     LaunchedEffect(Unit) {
         viewModelPantalla.cargarBebidas()
     }
@@ -120,7 +121,7 @@ fun Pantalla2Screen(
                         // Icono de Carrito
                         IconButton(onClick = { navigateToCarrito() }) {
                             Icon(
-                                imageVector = Icons.Default.ShoppingCart,
+                                imageVector = Icons.Default.Favorite,
                                 contentDescription = "Ir al carrito",
                                 modifier = Modifier
                                     .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
@@ -130,8 +131,19 @@ fun Pantalla2Screen(
                         }
                     }
                 }
-
             )
+        },
+        floatingActionButton = { // Agregar el FAB para crear cóctel
+            FloatingActionButton(
+                onClick = { navigateToCrearCoctel() },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add, // Icono para agregar
+                    contentDescription = "Crear Cóctel",
+                    tint = Color.White
+                )
+            }
         }
     ) { innerPadding ->
         Column(
@@ -174,6 +186,7 @@ fun Pantalla2Screen(
         }
     }
 }
+
 
 // Card para mostrar la información de una bebida
 @Composable

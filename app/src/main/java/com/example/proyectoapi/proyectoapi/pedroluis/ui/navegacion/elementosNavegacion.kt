@@ -15,6 +15,9 @@ object Perfil
 object Carrito
 
 @Serializable
+object Crear
+
+@Serializable
 object Pantalla1
 
 @Serializable

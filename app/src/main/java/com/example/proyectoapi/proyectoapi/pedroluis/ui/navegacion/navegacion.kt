@@ -15,9 +15,11 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Pantalla3
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1Screen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Carrito
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Crear
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.ForgotPassword
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Perfil
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.SignUp
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.CrearCoctelScreen.CrearCoctelScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.FavoritoScreen.PantallaFavoritosScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1ForgotPasswordScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1SignUpScreen
@@ -88,6 +90,9 @@ fun Navegacion(
                 },
                 {
                     navController.navigate(Perfil)
+                },
+                {
+                    navController.navigate(Crear)
                 }
             )
         }
@@ -113,8 +118,6 @@ fun Navegacion(
 
         composable<Carrito> {
             PantallaFavoritosScreen(
-                viewModel,
-                auth,
                 firestoreManager,
                 navegarAPantalla2 = {
                     navController.navigate(Pantalla2) {
@@ -125,11 +128,31 @@ fun Navegacion(
         }
 
         composable<Perfil> {
-            PerfilScreen(auth) {
+            PerfilScreen(auth,
+                navigateToBack = {
+                    navController.navigate(Pantalla2) {
+                        popUpTo(Pantalla2) { inclusive = true }
+                    }
+                },
+            ) {
                 navController.navigate(Pantalla2) {
                     popUpTo(Pantalla2) { inclusive = true }
                 }
             }
         }
+
+        composable<Crear> {
+            CrearCoctelScreen(
+                auth,
+                navController,
+                viewModel,
+                navegarAPantalla2 = {
+                    navController.navigate(Pantalla2) {
+                        popUpTo(Pantalla2) { inclusive = true }
+                    }
+                }
+            )
+        }
+
     }
 }

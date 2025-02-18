@@ -10,6 +10,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
@@ -24,20 +26,27 @@ import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaFavoritosScreen(
-    viewModel: Pantalla2ViewModel,
-    authManager: AuthManager,
     firestoreManager: FirestoreManager,
     navegarAPantalla2: () -> Unit,
 ) {
-    val bebidas by viewModel.bebidas.observeAsState(emptyList())
-    val isLoading = viewModel.progressBar.observeAsState(initial = false).value
+    var coctelesFavorites by remember { mutableStateOf<List<MediaItem>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        viewModel.cargarBebidas() // Llamar a la función para cargar los datos
+        try {
+            coctelesFavorites = firestoreManager.getFavorites()
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error al obtener favoritos: ${e.message}")
+        } finally {
+            isLoading = false
+        }
     }
 
     Scaffold(
@@ -65,8 +74,8 @@ fun PantallaFavoritosScreen(
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                items(bebidas) { bebida ->
-                    CoctelCard(coctel = bebida)
+                items(coctelesFavorites) { bebida ->
+                    CoctelCard(coctel = bebida, firestoreManager)
                 }
             }
         }
@@ -76,7 +85,17 @@ fun PantallaFavoritosScreen(
 
 
 @Composable
-fun CoctelCard(coctel: MediaItem) {
+fun CoctelCard(
+    coctel: MediaItem,
+    firestoreManager: FirestoreManager
+) {
+    var isFavorite by remember { mutableStateOf(false) }
+
+    LaunchedEffect(coctel) {
+        val favorites = firestoreManager.getFavorites()
+        isFavorite = favorites.any { it.idDrink == coctel.idDrink }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -104,11 +123,25 @@ fun CoctelCard(coctel: MediaItem) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-            Button(
-                onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE7B142))
+
+            // Botón para marcar/desmarcar como favorito
+            IconButton(
+                onClick = {
+                    isFavorite = !isFavorite
+                    CoroutineScope(Dispatchers.IO).launch {
+                        if (isFavorite) {
+                            firestoreManager.addFavorite(coctel)
+                        } else {
+                            coctel.idDrink?.let { firestoreManager.removeFavorite(it) }
+                        }
+                    }
+                }
             ) {
-                Text(text = "Ver receta")
+                Icon(
+                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorito",
+                    tint = if (isFavorite) Color.Red else Color.Gray
+                )
             }
         }
     }

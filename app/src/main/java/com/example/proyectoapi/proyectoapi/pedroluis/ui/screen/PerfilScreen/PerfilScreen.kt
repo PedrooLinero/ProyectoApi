@@ -54,8 +54,10 @@ import java.util.Locale
 @Composable
 fun PerfilScreen(
     auth: AuthManager,
-    navigateToBack: () -> Unit
-) {
+    navigateToBack: () -> Unit,
+    navegarAPantalla1: () -> Unit,
+
+    ) {
     val authState by auth.authState.collectAsState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -183,7 +185,8 @@ fun PerfilScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(50.dp)
+                    .padding(vertical = 8.dp),  // Agregar un poco de espacio entre botones
                 onClick = {
                     if (nombreNuevo != nombre) {
                         scope.launch {
@@ -217,6 +220,24 @@ fun PerfilScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Guardar cambios", fontSize = 16.sp)
                 }
+            }
+
+// Botón de cerrar sesión
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(vertical = 8.dp),  // Espacio entre botones
+                onClick = {
+                    auth.signOut()
+                    navegarAPantalla1() // Redirige a Pantalla1 después de hacer logout
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF1A1A1A),
+                ),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text("Cerrar sesión", color = Color.White, fontSize = 16.sp)
             }
         }
     }

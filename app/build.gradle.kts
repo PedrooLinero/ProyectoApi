@@ -101,4 +101,6 @@ dependencies {
     implementation (libs.androidx.hilt.navigation.compose)
     implementation (libs.hilt.android)
 
+    implementation (libs.play.services.auth.v2130)
+
 }

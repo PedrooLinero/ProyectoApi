@@ -117,7 +117,7 @@ fun Pantalla3DetalleScreen(
                             // Icono de Carrito
                             IconButton(onClick = { navigateToCarrito() }) {
                                 Icon(
-                                    imageVector = Icons.Default.ShoppingCart,
+                                    imageVector = Icons.Default.Favorite,
                                     contentDescription = "Ir al carrito",
                                     modifier = Modifier
                                         .background(
@@ -301,11 +301,10 @@ fun ListaIngredientes(ingredientes: List<String?>) {
     }
 }
 
-// Funcion para pedir un coctel
-// Función para pedir un coctel y marcar como favorito
+
 @Composable
 fun MarcarComoFavorito(
-    item: MediaItem, // Cambié 'bebidas' por 'MediaItem'
+    item: MediaItem,
     firestoreManager: FirestoreManager
 ) {
     var isFavorite by remember { mutableStateOf(false) }

@@ -1,17 +1,9 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.data.firebase
 
-import android.content.Context
-import bebidas
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
-import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.db.CarritoDB
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.snapshots
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+
 import kotlinx.coroutines.tasks.await
 
 class FirestoreManager{
@@ -20,15 +12,40 @@ class FirestoreManager{
 
     private fun getUserId(): String? = auth.currentUser?.uid
 
-    suspend fun addFavorite(mediaItem: MediaItem){
-        val userId = getUserId() ?: return
-        val snapshot = firestore.collection("users")
-            .document(userId)
-            .collection("favorites")
-            .document(mediaItem.idDrink.toString())
-            .set(mediaItem)
+     suspend fun addCocktail(mediaItem: MediaItem) {
+        try {
+            firestore.collection("cocktails")  // Colección global para los cócteles
+                .document(mediaItem.idDrink)  // Usar el id único del cóctel
+                .set(mediaItem)  // Guardar el objeto completo
+                .await()
+            println("Cóctel añadido correctamente a Firestore: ${mediaItem.idDrink}")
+        } catch (e: Exception) {
+            println("Error al añadir cóctel: ${e.message}")
+        }
+    }
+
+    suspend fun removeCocktail(idDrink: String) {
+        firestore.collection("cocktails")
+            .document(idDrink)
+            .delete()
             .await()
     }
+
+    suspend fun addFavorite(mediaItem: MediaItem) {
+        val userId = getUserId() ?: return
+        try {
+            firestore.collection("users")
+                .document(userId)
+                .collection("favorites")
+                .document(mediaItem.idDrink)
+                .set(mediaItem)
+                .await()
+            println("Producto añadido correctamente a Firestore: ${mediaItem.idDrink}")
+        } catch (e: Exception) {
+            println("Error al añadir producto: ${e.message}")
+        }
+    }
+
 
     suspend fun getFavorites(): List<MediaItem>{
         val userId = getUserId() ?: return emptyList()
@@ -46,7 +63,7 @@ class FirestoreManager{
         firestore.collection("users")
             .document(userId)
             .collection("favorites")
-            .document(idDrink.toString())
+            .document(idDrink)
             .delete()
             .await()
     }
