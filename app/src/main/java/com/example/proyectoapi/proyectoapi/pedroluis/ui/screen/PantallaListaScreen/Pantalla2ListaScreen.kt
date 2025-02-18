@@ -61,10 +61,6 @@ fun Pantalla2Screen(
         navegarAPantalla1()
     }
 
-    val showFavorites = {
-        navigateToCarrito()
-    }
-
     Scaffold(
         topBar = {
             val nombre =

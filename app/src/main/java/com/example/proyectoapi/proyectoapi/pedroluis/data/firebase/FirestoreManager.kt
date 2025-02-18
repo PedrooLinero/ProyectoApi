@@ -23,6 +23,16 @@ class FirestoreManager{
             println("Error al añadir cóctel: ${e.message}")
         }
     }
+    
+    suspend fun getCocktails(): List<MediaItem> {
+        return try {
+            val snapshot = firestore.collection("cocktails").get().await()
+            snapshot.documents.mapNotNull { it.toObject(MediaItem::class.java) }
+        } catch (e: Exception) {
+            println("Error al obtener cócteles: ${e.message}")
+            emptyList()
+        }
+    }
 
     suspend fun removeCocktail(idDrink: String) {
         firestore.collection("cocktails")

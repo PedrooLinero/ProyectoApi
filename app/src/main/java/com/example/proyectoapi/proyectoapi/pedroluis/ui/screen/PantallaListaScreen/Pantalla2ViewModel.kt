@@ -5,13 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 import com.example.proyectoapi.proyectoapi.pedroluis.data.repositories.RemoteConnection
 import kotlinx.coroutines.launch
 import toMediaItem
 
 // ViewModel encargado de gestionar la lista de bebidas
-class Pantalla2ViewModel : ViewModel() {
+class Pantalla2ViewModel(
+    private val firestoreManager: FirestoreManager
+) : ViewModel() {
+
     private val _bebidas: MutableLiveData<List<MediaItem>> = MutableLiveData()
     val bebidas: LiveData<List<MediaItem>> = _bebidas
 
@@ -25,8 +29,17 @@ class Pantalla2ViewModel : ViewModel() {
         _progressBar.value = true
         viewModelScope.launch {
             try {
+                // Cargar bebidas de la API
                 val response = RemoteConnection.remoteService.getDrinks()
-                _bebidas.value = response.drinks.map { it.toMediaItem() }
+                val bebidasApi = response.drinks.map { it.toMediaItem() }
+
+                // Cargar bebidas de Firestore
+                val bebidasFirestore = firestoreManager.getCocktails()
+
+                // Combinar ambas listas
+                val todasLasBebidas = bebidasApi + bebidasFirestore
+
+                _bebidas.value = todasLasBebidas
                 Log.d("Pantalla2ViewModel", "Bebidas cargadas: ${_bebidas.value?.size}")
             } catch (e: Exception) {
                 Log.e("Pantalla2ViewModel", "Error al cargar bebidas: ${e.message}")
@@ -35,7 +48,6 @@ class Pantalla2ViewModel : ViewModel() {
             }
         }
     }
-
 
     fun cargarBebidaId(id: String) {
         _progressBar.value = true
@@ -51,5 +63,5 @@ class Pantalla2ViewModel : ViewModel() {
             }
         }
     }
-
 }
+

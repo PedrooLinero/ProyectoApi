@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                 // Inicializar Firestore
                 val firestoreManager = remember { FirestoreManager() }
                 // Llamamos a la función Navegacion y le pasamos el parámetro 'auth'
-                Navegacion(auth, firestoreManager, Pantalla2ViewModel())
+                Navegacion(auth, firestoreManager, Pantalla2ViewModel(firestoreManager))
             }
         }
     }
