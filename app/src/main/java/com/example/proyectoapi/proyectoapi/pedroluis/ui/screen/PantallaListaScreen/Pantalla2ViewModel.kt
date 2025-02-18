@@ -19,8 +19,8 @@ class Pantalla2ViewModel(
     private val _bebidas: MutableLiveData<List<MediaItem>> = MutableLiveData()
     val bebidas: LiveData<List<MediaItem>> = _bebidas
 
-    private val _producto: MutableLiveData<MediaItem> = MutableLiveData()
-    val producto: LiveData<MediaItem> = _producto
+    private val _producto: MutableLiveData<MediaItem?> = MutableLiveData()
+    val producto: MutableLiveData<MediaItem?> = _producto
 
     private val _progressBar: MutableLiveData<Boolean> = MutableLiveData(false)
     val progressBar: LiveData<Boolean> = _progressBar
@@ -55,7 +55,17 @@ class Pantalla2ViewModel(
             try {
                 val response = RemoteConnection.remoteService.getDrinkById(id)
                 _producto.value = response.drinks?.firstOrNull()?.toMediaItem()
+
+                if (response == null) {
+                    val bebidaFirestore = firestoreManager.getCocktailById(id)
+                    _producto.value = bebidaFirestore
+
+                } else {
+                    Log.e("Pantalla2ViewModel", "Error al cargar bebida por ID: bebidaFirestore ist null")
+                }
+
                 Log.d("Pantalla2ViewModel", "Bebida cargada: ${_producto.value?.strDrink}")
+
             } catch (e: Exception) {
                 Log.e("Pantalla2ViewModel", "Error al cargar bebida por ID: ${e.message}")
             } finally {

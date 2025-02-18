@@ -77,4 +77,18 @@ class FirestoreManager{
             .delete()
             .await()
     }
+
+    // Obtener un cóctel por ID de Firestore
+    suspend fun getCocktailById(idDrink: String): MediaItem? {
+        return try {
+            val snapshot = firestore.collection("cocktails")
+                .document(idDrink)
+                .get()
+                .await()
+            snapshot.toObject(MediaItem::class.java)
+        } catch (e: Exception) {
+            println("Error al obtener cóctel por ID: ${e.message}")
+            null
+        }
+    }
 }
