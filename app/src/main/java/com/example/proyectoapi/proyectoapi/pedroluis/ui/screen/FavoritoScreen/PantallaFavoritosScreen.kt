@@ -1,6 +1,7 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.FavoritoScreen
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -74,24 +75,29 @@ fun PantallaFavoritosScreen(
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                items(coctelesFavorites) { bebida ->
-                    CoctelCard(coctel = bebida, firestoreManager)
+                items(coctelesFavorites, key = { it.idDrink ?: "" }) { bebida ->
+                    CoctelCard(
+                        coctel = bebida,
+                        firestoreManager = firestoreManager,
+                        onRemoveFavorite = { idDrink ->
+                            coctelesFavorites = coctelesFavorites.filterNot { it.idDrink == idDrink }
+                        }
+                    )
                 }
             }
         }
     }
 }
 
-
-
 @Composable
 fun CoctelCard(
     coctel: MediaItem,
-    firestoreManager: FirestoreManager
+    firestoreManager: FirestoreManager,
+    onRemoveFavorite: (String) -> Unit
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
+    var isFavorite by remember { mutableStateOf(true) }
 
-    LaunchedEffect(coctel) {
+    LaunchedEffect(coctel.idDrink) {
         val favorites = firestoreManager.getFavorites()
         isFavorite = favorites.any { it.idDrink == coctel.idDrink }
     }
@@ -99,43 +105,57 @@ fun CoctelCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.elevatedCardElevation()
+            .padding(12.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.elevatedCardElevation(6.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
+        Box {
             AsyncImage(
                 model = coctel.strDrinkThumb,
                 contentDescription = "Imagen de ${coctel.strDrink}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(200.dp)
+                    .height(250.dp)
                     .fillMaxWidth()
             )
-            Text(
-                text = coctel.strDrink,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
 
-            // Botón para marcar/desmarcar como favorito
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(Color.Black.copy(alpha = 0.6f))
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = coctel.strDrink,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
             IconButton(
                 onClick = {
                     isFavorite = !isFavorite
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (isFavorite) {
-                            firestoreManager.addFavorite(coctel)
-                        } else {
-                            coctel.idDrink?.let { firestoreManager.removeFavorite(it) }
+                    coctel.idDrink?.let { idDrink ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            if (!isFavorite) {
+                                firestoreManager.removeFavorite(idDrink)
+                                onRemoveFavorite(idDrink)
+                            } else {
+                                firestoreManager.addFavorite(coctel)
+                            }
                         }
                     }
-                }
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .size(36.dp)
+                    .background(Color.White.copy(alpha = 0.8f), shape = RoundedCornerShape(50))
             ) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -146,3 +166,4 @@ fun CoctelCard(
         }
     }
 }
+
