@@ -23,11 +23,6 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.CrearCoctelScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.FavoritoScreen.PantallaFavoritosScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1ForgotPasswordScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1SignUpScreen
-import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PerfilScreen.PerfilScreen
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.filter
 
 
 @Composable
@@ -89,9 +84,6 @@ fun Navegacion(
                     navController.navigate(Carrito)
                 },
                 {
-                    navController.navigate(Perfil)
-                },
-                {
                     navController.navigate(Crear)
                 }
             )
@@ -110,9 +102,6 @@ fun Navegacion(
                 {
                     navController.navigate(Carrito)
                 },
-                {
-                    navController.navigate(Perfil)
-                }
             )
         }
 
@@ -125,20 +114,6 @@ fun Navegacion(
                     }
                 }
             )
-        }
-
-        composable<Perfil> {
-            PerfilScreen(auth,
-                navigateToBack = {
-                    navController.navigate(Pantalla2) {
-                        popUpTo(Pantalla2) { inclusive = true }
-                    }
-                },
-            ) {
-                navController.navigate(Pantalla2) {
-                    popUpTo(Pantalla2) { inclusive = true }
-                }
-            }
         }
 
         composable<Crear> {

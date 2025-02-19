@@ -199,9 +199,16 @@ fun Pantalla1Screen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "¿No tienes una cuenta?",
-                    style = TextStyle(color = Color.Gray)
+                    text = "¿No tienes una cuenta? Regístrate aquí",
+                    modifier = Modifier.clickable { navigateToSignUp() },
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily.Default,
+                        textDecoration = TextDecoration.Underline,
+                        color = Purple40
+                    )
                 )
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -221,13 +228,17 @@ fun Pantalla1Screen(
 
                 BotonesGoogle(
                     onClick = {
-                        googleSignLauncher.launch(auth.getGoogleSignInIntent())
+                        scope.launch {
+                            auth.signOut()  // Limpia la sesión actual
+                            googleSignLauncher.launch(auth.getGoogleSignInIntent())
+                        }
                     },
                     text = "Continuar con Google",
                     icon = R.drawable.ic_google,
                     color = Color(0xFFF1F1F1),
                     cargando = auth.progressBarGoogle.observeAsState().value ?: false
                 )
+
             }
         }
     }

@@ -53,19 +53,23 @@ class Pantalla2ViewModel(
         _progressBar.value = true
         viewModelScope.launch {
             try {
+                Log.d("Pantalla2ViewModel", "Intentando cargar cóctel con ID: $id")
                 val response = RemoteConnection.remoteService.getDrinkById(id)
-                _producto.value = response.drinks?.firstOrNull()?.toMediaItem()
+                Log.d("Pantalla2ViewModel", "Respuesta de la API: ${response.drinks}")
 
-                if (response == null) {
-                    val bebidaFirestore = firestoreManager.getCocktailById(id)
-                    _producto.value = bebidaFirestore
-
+                if (response.drinks != null && response.drinks.isNotEmpty()) {
+                    _producto.value = response.drinks.first().toMediaItem()
+                    Log.d("Pantalla2ViewModel", "Cóctel cargado desde la API: ${_producto.value?.strDrink}")
                 } else {
-                    Log.e("Pantalla2ViewModel", "Error al cargar bebida por ID: bebidaFirestore ist null")
+                    Log.d("Pantalla2ViewModel", "Cóctel no encontrado en la API. Intentando cargar desde Firestore...")
+                    val bebidaFirestore = firestoreManager.getCocktailById(id)
+                    if (bebidaFirestore != null) {
+                        _producto.value = bebidaFirestore
+                        Log.d("Pantalla2ViewModel", "Cóctel cargado desde Firestore: ${_producto.value?.strDrink}")
+                    } else {
+                        Log.e("Pantalla2ViewModel", "Error: No se encontró el cóctel en Firestore")
+                    }
                 }
-
-                Log.d("Pantalla2ViewModel", "Bebida cargada: ${_producto.value?.strDrink}")
-
             } catch (e: Exception) {
                 Log.e("Pantalla2ViewModel", "Error al cargar bebida por ID: ${e.message}")
             } finally {

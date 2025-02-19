@@ -1,5 +1,6 @@
 package com.example.proyectoapi.proyectoapi.pedroluis.data.firebase
 
+import android.util.Log
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,27 +13,37 @@ class FirestoreManager{
 
     private fun getUserId(): String? = auth.currentUser?.uid
 
-     suspend fun addCocktail(mediaItem: MediaItem) {
+    suspend fun addCocktail(mediaItem: MediaItem) {
+        val userId = getUserId() ?: return
         try {
-            firestore.collection("cocktails")  // Colección global para los cócteles
-                .document(mediaItem.idDrink)  // Usar el id único del cóctel
-                .set(mediaItem)  // Guardar el objeto completo
+            firestore.collection("users")
+                .document(userId)
+                .collection("cocktails")
+                .document(mediaItem.idDrink)
+                .set(mediaItem)
                 .await()
-            println("Cóctel añadido correctamente a Firestore: ${mediaItem.idDrink}")
+            println("Cóctel añadido para el usuario $userId: ${mediaItem.idDrink}")
         } catch (e: Exception) {
             println("Error al añadir cóctel: ${e.message}")
         }
     }
-    
+
+
     suspend fun getCocktails(): List<MediaItem> {
+        val userId = getUserId() ?: return emptyList()
         return try {
-            val snapshot = firestore.collection("cocktails").get().await()
+            val snapshot = firestore.collection("users")
+                .document(userId)
+                .collection("cocktails")
+                .get()
+                .await()
             snapshot.documents.mapNotNull { it.toObject(MediaItem::class.java) }
         } catch (e: Exception) {
             println("Error al obtener cócteles: ${e.message}")
             emptyList()
         }
     }
+
 
     suspend fun removeCocktail(idDrink: String) {
         firestore.collection("cocktails")
@@ -79,15 +90,16 @@ class FirestoreManager{
     }
 
     // Obtener un cóctel por ID de Firestore
-    suspend fun getCocktailById(idDrink: String): MediaItem? {
+    suspend fun getCocktailById(id: String): MediaItem? {
         return try {
-            val snapshot = firestore.collection("cocktails")
-                .document(idDrink)
-                .get()
-                .await()
-            snapshot.toObject(MediaItem::class.java)
+            val document = firestore.collection("cocktails").document(id).get().await()
+            if (document.exists()) {
+                document.toObject(MediaItem::class.java)
+            } else {
+                null
+            }
         } catch (e: Exception) {
-            println("Error al obtener cóctel por ID: ${e.message}")
+            Log.e("FirestoreManager", "Error al obtener cóctel por ID: ${e.message}")
             null
         }
     }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.BackHand
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -44,7 +45,6 @@ fun Pantalla3DetalleScreen(
     firestoreManager: FirestoreManager = FirestoreManager(),
     navegarAPantalla2: () -> Unit,
     navigateToCarrito: () -> Unit,
-    navigateToProfile: () -> Unit,
 ) {
     val bebida by viewModel.producto.observeAsState(null)
     val progressBar by viewModel.progressBar.observeAsState(false)
@@ -73,7 +73,7 @@ fun Pantalla3DetalleScreen(
                     title = {
                         Text(
                             "Detalles del Cóctel",
-                            fontSize = 28.sp,
+                            fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Serif
                         )
@@ -91,29 +91,6 @@ fun Pantalla3DetalleScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(end = 16.dp)
                         ) {
-                            Text(
-                                text = nombre,
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize = 16.sp,
-                                    color = Color(0xFF333333)
-                                )
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            // Icono de Usuario
-                            IconButton(onClick = { navigateToProfile() }) {
-                                Icon(
-                                    imageVector = Icons.Default.AccountCircle,
-                                    contentDescription = "Menú de usuario",
-                                    modifier = Modifier
-                                        .background(
-                                            Color.Gray.copy(alpha = 0.2f),
-                                            shape = CircleShape
-                                        )
-                                        .padding(8.dp),
-                                    tint = Color(0xFF333333)
-                                )
-                            }
-
                             // Icono de Carrito
                             IconButton(onClick = { navigateToCarrito() }) {
                                 Icon(

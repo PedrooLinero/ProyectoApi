@@ -139,6 +139,7 @@ class AuthManager : ViewModel() {
         googleSignInClient.signOut()
     }
 
+
     suspend fun updateDisplayName(newName: String) {
         val user = auth.currentUser
         if (user == null) {

@@ -22,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BackHand
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.LaunchedEffect
@@ -42,14 +44,16 @@ fun Pantalla2Screen(
     navegarAPantalla1: () -> Unit,
     navegarAPantalla3: (String) -> Unit,
     navigateToCarrito: () -> Unit,
-    navigateToProfile: () -> Unit,
-    navigateToCrearCoctel: () -> Unit // Añadimos la acción para navegar a la pantalla de creación de cóctel
+    navigateToCrearCoctel: () -> Unit
 ) {
     val lista by viewModelPantalla.bebidas.observeAsState(emptyList())
     val progressBar by viewModelPantalla.progressBar.observeAsState(false)
     val user = authManager.getCurrentUser()
 
     var coctelesfavorites by remember { mutableStateOf<List<MediaItem>>(emptyList()) }
+
+    // URL del logo de la aplicación
+    val fotoUrl = "https://media.istockphoto.com/id/1003178096/es/vector/c%C3%B3cteles.jpg?s=612x612&w=0&k=20&c=za-nipZJgIQJM3AqNgDdfx5_wz5oCTu1Lo9EzOo5BEo="
 
     // Cargar bebidas al entrar a la pantalla
     LaunchedEffect(Unit) {
@@ -63,36 +67,40 @@ fun Pantalla2Screen(
 
     Scaffold(
         topBar = {
-            val nombre =
-                if (user?.email == null) "Invitado" else user.displayName?.split(" ")?.firstOrNull()
-                    ?: "Usuario"
+            val nombre = if (user?.email == null) "Invitado"
+            else user.displayName?.split(" ")?.firstOrNull() ?: "Usuario"
 
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Nightcap Lounge",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Serif,
-                            color = Color(0xFF333333)
+                    // Muestra el logo de la aplicación en pequeño
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = rememberAsyncImagePainter(fotoUrl),
+                            contentDescription = "Logo de la aplicación",
+                            modifier = Modifier.size(30.dp)
                         )
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navegarAPantalla1() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver",
-                            tint = Color(0xFF333333)
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre el logo y el texto
+
+                        Text(
+                            text = "Nightcap Lounge",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontSize = 22.sp, // Tamaño más pequeño
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Serif,
+                                color = Color(0xFF333333)
+                            )
                         )
                     }
+
                 },
                 actions = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(end = 16.dp)
                     ) {
+                        // Muestra el nombre del usuario
                         Text(
                             text = nombre,
                             style = MaterialTheme.typography.bodyMedium.copy(
@@ -100,13 +108,12 @@ fun Pantalla2Screen(
                                 color = Color(0xFF333333)
                             )
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
 
-                        // Icono de Usuario
-                        IconButton(onClick = { navigateToProfile() }) {
+                        IconButton(onClick = logout) {
                             Icon(
-                                imageVector = Icons.Default.AccountCircle,
-                                contentDescription = "Menú de usuario",
+                                imageVector = Icons.Default.BackHand,
+                                contentDescription = "Logout",
                                 modifier = Modifier
                                     .background(Color.Gray.copy(alpha = 0.2f), shape = CircleShape)
                                     .padding(8.dp),
@@ -114,7 +121,6 @@ fun Pantalla2Screen(
                             )
                         }
 
-                        // Icono de Carrito
                         IconButton(onClick = { navigateToCarrito() }) {
                             Icon(
                                 imageVector = Icons.Default.Favorite,
@@ -129,13 +135,13 @@ fun Pantalla2Screen(
                 }
             )
         },
-        floatingActionButton = { // Agregar el FAB para crear cóctel
+        floatingActionButton = { // FAB para crear un cóctel
             FloatingActionButton(
                 onClick = { navigateToCrearCoctel() },
                 modifier = Modifier.padding(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Add, // Icono para agregar
+                    imageVector = Icons.Default.Add,
                     contentDescription = "Crear Cóctel",
                     tint = Color.White
                 )
@@ -151,13 +157,12 @@ fun Pantalla2Screen(
                 text = "Déjate seducir por el sabor de la creatividad en cada trago. ¡Prueba nuestros cócteles y descubre tu favorito!",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 21.sp,
+                    fontSize = 15.sp,
                     fontFamily = FontFamily.Serif,
                     color = Color(0xFFFF7043),
                     textAlign = TextAlign.Center
                 ),
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
 
             if (progressBar) {

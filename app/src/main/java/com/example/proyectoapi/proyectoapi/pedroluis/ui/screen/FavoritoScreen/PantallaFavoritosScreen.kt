@@ -18,6 +18,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,7 +54,14 @@ fun PantallaFavoritosScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Favoritos") },
+                title = {
+                    Text(
+                        "Favoritos",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Serif
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = navegarAPantalla2) {
                         Icon(
@@ -80,7 +88,8 @@ fun PantallaFavoritosScreen(
                         coctel = bebida,
                         firestoreManager = firestoreManager,
                         onRemoveFavorite = { idDrink ->
-                            coctelesFavorites = coctelesFavorites.filterNot { it.idDrink == idDrink }
+                            coctelesFavorites =
+                                coctelesFavorites.filterNot { it.idDrink == idDrink }
                         }
                     )
                 }

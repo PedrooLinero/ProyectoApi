@@ -242,7 +242,7 @@ fun guardarCoctel(
         strAlcoholic = tipoAlcohol,
         strDrinkThumb = imagenUrl,
         strGlass = vaso,
-        strInstructions = instrucciones,
+        strInstructionsES = instrucciones,
         strIngredient1 = ingredientes.getOrNull(0) ?: "",
         strIngredient2 = ingredientes.getOrNull(1) ?: "",
         strIngredient3 = ingredientes.getOrNull(2) ?: "",
@@ -261,5 +261,5 @@ fun guardarCoctel(
 
 // Generar un ID único
 fun generateId(): String {
-    return java.util.UUID.randomUUID().toString()
+    return (10000..99999).random().toString()
 }
