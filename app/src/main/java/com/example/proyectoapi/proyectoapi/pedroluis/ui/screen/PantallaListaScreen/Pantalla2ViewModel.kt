@@ -29,17 +29,29 @@ class Pantalla2ViewModel(
         _progressBar.value = true
         viewModelScope.launch {
             try {
-                // Cargar bebidas de la API
+                // Obtener cócteles desde la API
                 val response = RemoteConnection.remoteService.getDrinks()
                 val bebidasApi = response.drinks.map { it.toMediaItem() }
 
-                // Cargar bebidas de Firestore
+                // Obtener cócteles actualizados desde Firestore
                 val bebidasFirestore = firestoreManager.getCocktails()
 
-                // Combinar ambas listas
-                val todasLasBebidas = bebidasApi + bebidasFirestore
+                // Creamos un mapa con los cócteles actualizados, usando el id como clave
+                val updatedMap = bebidasFirestore.associateBy { it.idDrink }
 
-                _bebidas.value = todasLasBebidas
+                // Fusionamos: para cada cóctel de la API, si existe una versión actualizada en Firestore, la usamos; sino, usamos la versión de la API
+                val mergedList = bebidasApi.map { apiItem ->
+                    updatedMap[apiItem.idDrink] ?: apiItem
+                }
+
+                // Si existen cócteles en Firestore que no estén en la lista de la API (por ejemplo, creados manualmente), se añaden
+                val additionalItems = bebidasFirestore.filter { firestoreItem ->
+                    mergedList.none { it.idDrink == firestoreItem.idDrink }
+                }
+
+                // Combinar ambas listas
+                _bebidas.value = mergedList + additionalItems
+
                 Log.d("Pantalla2ViewModel", "Bebidas cargadas: ${_bebidas.value?.size}")
             } catch (e: Exception) {
                 Log.e("Pantalla2ViewModel", "Error al cargar bebidas: ${e.message}")
@@ -49,25 +61,22 @@ class Pantalla2ViewModel(
         }
     }
 
+
     fun cargarBebidaId(id: String) {
         _progressBar.value = true
         viewModelScope.launch {
             try {
-                Log.d("Pantalla2ViewModel", "Intentando cargar cóctel con ID: $id")
-                val response = RemoteConnection.remoteService.getDrinkById(id)
-                Log.d("Pantalla2ViewModel", "Respuesta de la API: ${response.drinks}")
-
-                if (response.drinks != null && response.drinks.isNotEmpty()) {
-                    _producto.value = response.drinks.first().toMediaItem()
-                    Log.d("Pantalla2ViewModel", "Cóctel cargado desde la API: ${_producto.value?.strDrink}")
+                // Primero, se consulta Firestore para ver si hay una versión modificada
+                val bebidaFirestore = firestoreManager.getCocktailById(id)
+                if (bebidaFirestore != null) {
+                    _producto.value = bebidaFirestore
+                    Log.d("Pantalla2ViewModel", "Cóctel cargado desde Firestore: ${_producto.value?.strDrink}")
                 } else {
-                    Log.d("Pantalla2ViewModel", "Cóctel no encontrado en la API. Intentando cargar desde Firestore...")
-                    val bebidaFirestore = firestoreManager.getCocktailById(id)
-                    if (bebidaFirestore != null) {
-                        _producto.value = bebidaFirestore
-                        Log.d("Pantalla2ViewModel", "Cóctel cargado desde Firestore: ${_producto.value?.strDrink}")
-                    } else {
-                        Log.e("Pantalla2ViewModel", "Error: No se encontró el cóctel en Firestore")
+                    // Si no existe en Firestore, se consulta la API
+                    val response = RemoteConnection.remoteService.getDrinkById(id)
+                    if (response.drinks != null && response.drinks.isNotEmpty()) {
+                        _producto.value = response.drinks.first().toMediaItem()
+                        Log.d("Pantalla2ViewModel", "Cóctel cargado desde la API: ${_producto.value?.strDrink}")
                     }
                 }
             } catch (e: Exception) {
@@ -77,5 +86,6 @@ class Pantalla2ViewModel(
             }
         }
     }
+
 }
 

@@ -9,7 +9,7 @@ object SignUp
 object ForgotPassword
 
 @Serializable
-object Perfil
+object Editar
 
 @Serializable
 object Carrito

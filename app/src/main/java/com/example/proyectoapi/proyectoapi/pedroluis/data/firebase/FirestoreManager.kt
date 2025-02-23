@@ -44,13 +44,22 @@ class FirestoreManager{
         }
     }
 
-
-    suspend fun removeCocktail(idDrink: String) {
-        firestore.collection("cocktails")
-            .document(idDrink)
-            .delete()
-            .await()
+    suspend fun updateCocktail(mediaItem: MediaItem) {
+        val userId = getUserId() ?: return
+        try {
+            firestore.collection("users")
+                .document(userId)
+                .collection("cocktails")
+                .document(mediaItem.idDrink)
+                .set(mediaItem)  // Sobreescribe el documento con los nuevos datos
+                .await()
+            Log.d("FirestoreManager", "Cóctel actualizado: ${mediaItem.idDrink}")
+        } catch (e: Exception) {
+            Log.e("FirestoreManager", "Error al actualizar cóctel: ${e.message}")
+        }
     }
+
+
 
     suspend fun addFavorite(mediaItem: MediaItem) {
         val userId = getUserId() ?: return
@@ -91,8 +100,15 @@ class FirestoreManager{
 
     // Obtener un cóctel por ID de Firestore
     suspend fun getCocktailById(id: String): MediaItem? {
+        val userId = getUserId() ?: return null
         return try {
-            val document = firestore.collection("cocktails").document(id).get().await()
+            val document = firestore.collection("users")
+                .document(userId)
+                .collection("cocktails")
+                .document(id)  // Buscar el cóctel dentro de la colección de cócteles del usuario
+                .get()
+                .await()
+
             if (document.exists()) {
                 document.toObject(MediaItem::class.java)
             } else {
@@ -103,4 +119,5 @@ class FirestoreManager{
             null
         }
     }
+
 }
