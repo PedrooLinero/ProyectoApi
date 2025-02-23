@@ -90,7 +90,7 @@ fun EditarCoctelScreen(
                 OutlinedTextField(
                     value = instrucciones,
                     onValueChange = { instrucciones = it },
-                    label = { Text("Instrucciones (ES)") },
+                    label = { Text("Instrucciones") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
