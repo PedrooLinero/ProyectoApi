@@ -31,6 +31,5 @@ data class MediaItem(
     val strTags: String? = null,
     val strVideo: String? = null,
     val dateModified: String? = null
-) {
-    constructor() : this("", "", "", "", "", "", "", null, null, "", null, null, null, null, null, null, "", "", "", "", "", null, null, null, null, null, null, null, null)
-}
+)
+

@@ -138,7 +138,8 @@ fun Pantalla2Screen(
         floatingActionButton = { // FAB para crear un cóctel
             FloatingActionButton(
                 onClick = { navigateToCrearCoctel() },
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                containerColor = Color(0xFFFF7043)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,

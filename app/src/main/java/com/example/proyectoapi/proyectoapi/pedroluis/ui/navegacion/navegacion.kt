@@ -16,10 +16,11 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScre
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Carrito
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Crear
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Editar
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.ForgotPassword
-import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.Perfil
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.navegacion.SignUp
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.CrearCoctelScreen.CrearCoctelScreen
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.EditarCoctelScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.FavoritoScreen.PantallaFavoritosScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1ForgotPasswordScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1SignUpScreen
@@ -33,8 +34,6 @@ fun Navegacion(
 
 
 ) {
-    val listaProductosAPI by viewModel.bebidas.observeAsState(emptyList())
-    val progressBar by viewModel.progressBar.observeAsState(true)
 
     val navController = rememberNavController()
 
@@ -93,7 +92,7 @@ fun Navegacion(
             val id = backStackEntry.toRoute<Pantalla3>().idDrink
             viewModel.cargarBebidaId(id)
             Pantalla3DetalleScreen(
-                auth, viewModel, firestoreManager, // Se pasa firestoreManager correctamente
+                cocktailId = id ,auth, viewModel, firestoreManager, // Se pasa firestoreManager correctamente
                 {
                     navController.navigate(Pantalla2) {
                         popUpTo(Pantalla2) { inclusive = true }
@@ -102,8 +101,24 @@ fun Navegacion(
                 {
                     navController.navigate(Carrito)
                 },
+                {
+                    navController.navigate(Editar)
+                }
             )
         }
+
+        composable<Editar> {
+            EditarCoctelScreen(
+                viewModel.producto.value!!,
+                {
+                    navController.navigate(Pantalla3(viewModel.producto.value!!.idDrink)) {
+                        popUpTo(Pantalla3(viewModel.producto.value!!.idDrink)) { inclusive = true }
+                    }
+                },
+                firestoreManager
+            )
+        }
+
 
         composable<Carrito> {
             PantallaFavoritosScreen(

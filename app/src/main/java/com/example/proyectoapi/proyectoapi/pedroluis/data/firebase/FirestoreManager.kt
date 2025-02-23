@@ -44,13 +44,22 @@ class FirestoreManager{
         }
     }
 
-
-    suspend fun removeCocktail(idDrink: String) {
-        firestore.collection("cocktails")
-            .document(idDrink)
-            .delete()
-            .await()
+    suspend fun updateCocktail(mediaItem: MediaItem) {
+        val userId = getUserId() ?: return
+        try {
+            firestore.collection("users")
+                .document(userId)
+                .collection("cocktails")
+                .document(mediaItem.idDrink)
+                .set(mediaItem)  // Sobreescribe el documento con los nuevos datos
+                .await()
+            Log.d("FirestoreManager", "Cóctel actualizado: ${mediaItem.idDrink}")
+        } catch (e: Exception) {
+            Log.e("FirestoreManager", "Error al actualizar cóctel: ${e.message}")
+        }
     }
+
+
 
     suspend fun addFavorite(mediaItem: MediaItem) {
         val userId = getUserId() ?: return

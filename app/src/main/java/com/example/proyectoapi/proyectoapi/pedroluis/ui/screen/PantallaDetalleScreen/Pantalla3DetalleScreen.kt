@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BackHand
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -40,18 +41,20 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pantalla3DetalleScreen(
+    cocktailId: String,
     authManager: AuthManager,
     viewModel: Pantalla2ViewModel,
     firestoreManager: FirestoreManager = FirestoreManager(),
     navegarAPantalla2: () -> Unit,
     navigateToCarrito: () -> Unit,
+    navigateToEdit: () -> Unit
 ) {
     val bebida by viewModel.producto.observeAsState(null)
     val progressBar by viewModel.progressBar.observeAsState(false)
     val usuario = authManager.getCurrentUser()
 
-    LaunchedEffect(bebida) {
-        viewModel.cargarBebidas()
+    LaunchedEffect(cocktailId) {
+        viewModel.cargarBebidaId(cocktailId)
     }
 
     if (progressBar) {
@@ -213,14 +216,24 @@ fun Pantalla3DetalleScreen(
                         textAlign = TextAlign.Center
                     )
 
-                    // Botón para pedir el cóctel
-                    Spacer(modifier = Modifier.weight(1f))
+                    Row { // Botón para pedir el cóctel
+                        Spacer(modifier = Modifier.weight(1f))
+                        MarcarComoFavorito(
+                            item = it,
+                            firestoreManager = firestoreManager
 
-                    MarcarComoFavorito(
-                        item = it,
-                        firestoreManager = firestoreManager
+                        )
 
-                    )
+                        // Icono de Modificar
+                        IconButton(onClick = { navigateToEdit() }) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Modificar",
+                                tint = Color.Blue
+                            )
+                        }
+                    }
+
                 }
             }
         }
@@ -298,7 +311,7 @@ fun MarcarComoFavorito(
                 if (isFavorite) {
                     firestoreManager.addFavorite(item)
                 } else {
-                        item.idDrink?.let { firestoreManager.removeFavorite(it) } // Cambiado para enviar el objeto completo
+                    item.idDrink?.let { firestoreManager.removeFavorite(it) } // Cambiado para enviar el objeto completo
                 }
             }
         }

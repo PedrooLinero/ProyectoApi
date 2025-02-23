@@ -77,28 +77,6 @@ fun CrearCoctelScreen(
                 },
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        guardarCoctel(
-                            nombreCoctel.text,
-                            categoriaCoctel.text,
-                            tipoAlcohol.text,
-                            imagenUrl.text,
-                            vaso.text,
-                            ingredientesSeleccionados.filterValues { it }.keys.toList(),
-                            instrucciones.text,
-                            firestoreManager,
-                            navController,
-                            scope
-                        )
-                    }
-                }
-            ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar Cóctel")
-            }
-        },
         content = { contentPadding ->
             Column(
                 modifier = Modifier
@@ -208,10 +186,14 @@ fun CrearCoctelScreen(
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF7043)
+                    )
                 ) {
                     Text("Guardar Cóctel")
                 }
+
             }
         }
     )
