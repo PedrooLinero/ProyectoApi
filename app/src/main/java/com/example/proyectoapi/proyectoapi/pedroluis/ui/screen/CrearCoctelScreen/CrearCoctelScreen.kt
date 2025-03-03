@@ -19,22 +19,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.FirestoreViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrearCoctelScreen(
-    authManager: AuthManager,
     navController: NavController,
-    viewModelPantalla: Pantalla2ViewModel,
     navegarAPantalla2: () -> Unit,
-) {
+    viewModel: FirestoreViewModel = viewModel(factory = FirestoreViewModel.FirestoreViewModelFactory(
+        FirestoreManager()
+    ))
+    ) {
     // Estados para los campos del formulario
     var nombreCoctel by remember { mutableStateOf(TextFieldValue()) }
     var categoriaCoctel by remember { mutableStateOf(TextFieldValue()) }
@@ -49,7 +52,7 @@ fun CrearCoctelScreen(
         ingredientes.forEach { this[it] = false }
     }}
 
-    val firestoreManager = FirestoreManager()
+    FirestoreManager()
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -180,8 +183,8 @@ fun CrearCoctelScreen(
                                 vaso.text,
                                 ingredientesSeleccionados.filterValues { it }.keys.toList(),
                                 instrucciones.text,
-                                firestoreManager,
                                 navController,
+                                viewModel,
                                 scope
                             )
                         }
@@ -208,8 +211,8 @@ fun guardarCoctel(
     vaso: String,
     ingredientes: List<String>,
     instrucciones: String,
-    firestoreManager: FirestoreManager,
     navController: NavController,
+    viewModel: FirestoreViewModel,
     scope: CoroutineScope
 ) {
     if (nombreCoctel.isEmpty() || categoriaCoctel.isEmpty() || tipoAlcohol.isEmpty() || imagenUrl.isEmpty() || vaso.isEmpty() || instrucciones.isEmpty()) {
@@ -235,7 +238,7 @@ fun guardarCoctel(
     )
 
     scope.launch {
-        firestoreManager.addCocktail(newMediaItem)
+        viewModel.addCocktail(newMediaItem)
         Toast.makeText(navController.context, "Cóctel guardado con éxito", Toast.LENGTH_SHORT).show()
         navController.popBackStack() // Regresa a la pantalla anterior
     }

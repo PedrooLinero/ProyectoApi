@@ -12,8 +12,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.FirestoreViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -22,7 +24,9 @@ import kotlinx.coroutines.launch
 fun EditarCoctelScreen(
     mediaItem: MediaItem,
     onBack: () -> Unit,
-    firestoreManager: FirestoreManager
+    viewModel: FirestoreViewModel = viewModel(factory = FirestoreViewModel.FirestoreViewModelFactory(
+        FirestoreManager()
+    )) // Proporcionar el FirestoreManager aquí
 ) {
     // Usamos String en lugar de TextFieldValue para evitar problemas de visualización
     var nombre by remember { mutableStateOf(mediaItem.strDrink) }
@@ -104,7 +108,6 @@ fun EditarCoctelScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-
                     onClick = {
                         // Separamos los ingredientes ingresados en una lista
                         val listIngredientes = ingredientes
@@ -126,7 +129,7 @@ fun EditarCoctelScreen(
                         )
                         scope.launch {
                             try {
-                                firestoreManager.updateCocktail(nuevoCoctel)
+                                viewModel.updateCocktail(nuevoCoctel) // Usar el ViewModel inyectado
                                 println("Cóctel actualizado exitosamente.")
                                 onBack()
                             } catch (e: Exception) {

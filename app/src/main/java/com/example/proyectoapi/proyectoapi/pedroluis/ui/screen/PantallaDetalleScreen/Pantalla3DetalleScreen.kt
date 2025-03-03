@@ -6,12 +6,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.BackHand
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,11 +26,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreManager
-import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.FirestoreViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,19 +41,19 @@ import kotlinx.coroutines.launch
 fun Pantalla3DetalleScreen(
     cocktailId: String,
     authManager: AuthManager,
-    viewModel: Pantalla2ViewModel,
-    firestoreManager: FirestoreManager = FirestoreManager(),
+    firestoreViewModel: FirestoreViewModel = viewModel(),
     navegarAPantalla2: () -> Unit,
     navigateToCarrito: () -> Unit,
     navigateToEdit: () -> Unit
 ) {
-    val bebida by viewModel.producto.observeAsState(null)
-    val progressBar by viewModel.progressBar.observeAsState(false)
+    val bebida by firestoreViewModel.producto.observeAsState(null)
+    val progressBar by firestoreViewModel.progressBar.observeAsState(false)
     val usuario = authManager.getCurrentUser()
 
     LaunchedEffect(cocktailId) {
-        viewModel.cargarBebidaId(cocktailId)
+        firestoreViewModel.cargarBebidaId(cocktailId)
     }
+
 
     if (progressBar) {
         Box(
@@ -220,7 +218,7 @@ fun Pantalla3DetalleScreen(
                         Spacer(modifier = Modifier.weight(1f))
                         MarcarComoFavorito(
                             item = it,
-                            firestoreManager = firestoreManager
+                            firestoreViewModel = firestoreViewModel,
 
                         )
 
@@ -295,13 +293,20 @@ fun ListaIngredientes(ingredientes: List<String?>) {
 @Composable
 fun MarcarComoFavorito(
     item: MediaItem,
-    firestoreManager: FirestoreManager
+    firestoreViewModel: FirestoreViewModel,
+    viewModel: FirestoreViewModel = viewModel(
+        factory = FirestoreViewModel.FirestoreViewModelFactory(firestoreViewModel.firestoreManager)
+    )
 ) {
     var isFavorite by remember { mutableStateOf(false) }
+    val favoritesList by firestoreViewModel.favorites.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        val favorites = firestoreManager.getFavorites()
-        isFavorite = favorites.any { it.idDrink == item.idDrink }
+        firestoreViewModel.loadFavorites()
+    }
+
+    LaunchedEffect(favoritesList) {
+        isFavorite = favoritesList.any { it.idDrink == item.idDrink }
     }
 
     IconButton(
@@ -309,9 +314,9 @@ fun MarcarComoFavorito(
             isFavorite = !isFavorite
             CoroutineScope(Dispatchers.IO).launch {
                 if (isFavorite) {
-                    firestoreManager.addFavorite(item)
+                    viewModel.addFavorite(item)
                 } else {
-                    item.idDrink?.let { firestoreManager.removeFavorite(it) } // Cambiado para enviar el objeto completo
+                    item.idDrink?.let { firestoreViewModel.removeFavorite(it) }
                 }
             }
         }
@@ -322,7 +327,6 @@ fun MarcarComoFavorito(
             tint = if (isFavorite) Color.Red else Color.Gray
         )
     }
-
-
 }
+
 

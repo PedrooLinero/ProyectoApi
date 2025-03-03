@@ -5,17 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
@@ -23,11 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.AuthManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.firebase.FirestoreManager
 import com.example.proyectoapi.proyectoapi.pedroluis.data.model.MediaItem
-import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaListaScreen.Pantalla2ViewModel
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.FirestoreViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,20 +34,16 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaFavoritosScreen(
-    firestoreManager: FirestoreManager,
     navegarAPantalla2: () -> Unit,
-) {
-    var coctelesFavorites by remember { mutableStateOf<List<MediaItem>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
+    viewModel: FirestoreViewModel = viewModel(factory = FirestoreViewModel.FirestoreViewModelFactory(
+        FirestoreManager()
+    ))) {
+    // Provide a default empty list to avoid null values
+    val favorites by viewModel.favorites.observeAsState(emptyList())
+    val isLoading by viewModel.isLoading.observeAsState(false)
 
     LaunchedEffect(Unit) {
-        try {
-            coctelesFavorites = firestoreManager.getFavorites()
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error al obtener favoritos: ${e.message}")
-        } finally {
-            isLoading = false
-        }
+        viewModel.loadFavorites()
     }
 
     Scaffold(
@@ -66,7 +61,7 @@ fun PantallaFavoritosScreen(
                     IconButton(onClick = navegarAPantalla2) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Volver"
                         )
                     }
                 }
@@ -74,7 +69,10 @@ fun PantallaFavoritosScreen(
         }
     ) { padding ->
         if (isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator()
             }
         } else {
@@ -83,14 +81,11 @@ fun PantallaFavoritosScreen(
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                items(coctelesFavorites, key = { it.idDrink ?: "" }) { bebida ->
+                // Pass the non-null list to the items function
+                items(favorites, key = { it.idDrink ?: "" }) { bebida ->
                     CoctelCard(
                         coctel = bebida,
-                        firestoreManager = firestoreManager,
-                        onRemoveFavorite = { idDrink ->
-                            coctelesFavorites =
-                                coctelesFavorites.filterNot { it.idDrink == idDrink }
-                        }
+                        viewModel = viewModel
                     )
                 }
             }
@@ -101,14 +96,14 @@ fun PantallaFavoritosScreen(
 @Composable
 fun CoctelCard(
     coctel: MediaItem,
-    firestoreManager: FirestoreManager,
-    onRemoveFavorite: (String) -> Unit
+    viewModel: FirestoreViewModel
 ) {
-    var isFavorite by remember { mutableStateOf(true) }
+    // No necesitamos `isFavorite` local, lo obtendremos directamente de la lista de favoritos
+    val favoritesList by viewModel.favorites.observeAsState(emptyList())
+    val isFavorite = favoritesList.any { it.idDrink == coctel.idDrink }
 
-    LaunchedEffect(coctel.idDrink) {
-        val favorites = firestoreManager.getFavorites()
-        isFavorite = favorites.any { it.idDrink == coctel.idDrink }
+    LaunchedEffect(coctel.idDrink, favoritesList) {
+        // Este efecto se usa para actualizar el estado del favorito cuando cambia la lista
     }
 
     Card(
@@ -148,15 +143,15 @@ fun CoctelCard(
 
             IconButton(
                 onClick = {
-                    isFavorite = !isFavorite
                     coctel.idDrink?.let { idDrink ->
                         CoroutineScope(Dispatchers.IO).launch {
-                            if (!isFavorite) {
-                                firestoreManager.removeFavorite(idDrink)
-                                onRemoveFavorite(idDrink)
+                            if (isFavorite) {
+                                viewModel.removeFavorite(idDrink) // Eliminar favorito
                             } else {
-                                firestoreManager.addFavorite(coctel)
+                                viewModel.addFavorite(coctel) // Agregar favorito
                             }
+                            // Volver a cargar la lista de favoritos después de la acción
+                            viewModel.loadFavorites()
                         }
                     }
                 },
@@ -175,4 +170,3 @@ fun CoctelCard(
         }
     }
 }
-

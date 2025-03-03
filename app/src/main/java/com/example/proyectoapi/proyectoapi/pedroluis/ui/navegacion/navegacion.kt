@@ -1,8 +1,4 @@
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.snapshotFlow
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,15 +20,14 @@ import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.EditarCoctelScree
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.FavoritoScreen.PantallaFavoritosScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1ForgotPasswordScreen
 import com.example.proyectoapi.proyectoapi.pedroluis.ui.screen.PantallaLoginScreen.Pantalla1SignUpScreen
+import com.example.proyectoapi.proyectoapi.pedroluis.ui.viewmodel.FirestoreViewModel
 
 
 @Composable
 fun Navegacion(
     auth: AuthManager,
-    firestoreManager: FirestoreManager, // Ahora FirestoreManager se recibe como parámetro
-    viewModel: Pantalla2ViewModel
-
-
+    viewModelPantalla: Pantalla2ViewModel,
+    viewModelFirestore : FirestoreViewModel
 ) {
 
     val navController = rememberNavController()
@@ -70,7 +65,7 @@ fun Navegacion(
             }
         }
         composable<Pantalla2> {
-            Pantalla2Screen(auth, viewModel, // Usamos el viewModelAPI que ya se pasa
+            Pantalla2Screen(auth, viewModelPantalla,
                 {
                     navController.navigate(Pantalla1) {
                         popUpTo(Pantalla2) { inclusive = true }
@@ -90,9 +85,9 @@ fun Navegacion(
 
         composable<Pantalla3> { backStackEntry ->
             val id = backStackEntry.toRoute<Pantalla3>().idDrink
-            viewModel.cargarBebidaId(id)
+            viewModelFirestore.cargarBebidaId(id)
             Pantalla3DetalleScreen(
-                cocktailId = id ,auth, viewModel, firestoreManager, // Se pasa firestoreManager correctamente
+                cocktailId = id ,auth, firestoreViewModel = viewModelFirestore,
                 {
                     navController.navigate(Pantalla2) {
                         popUpTo(Pantalla2) { inclusive = true }
@@ -109,20 +104,18 @@ fun Navegacion(
 
         composable<Editar> {
             EditarCoctelScreen(
-                viewModel.producto.value!!,
+                viewModelFirestore.producto.value!!,
                 {
-                    navController.navigate(Pantalla3(viewModel.producto.value!!.idDrink)) {
-                        popUpTo(Pantalla3(viewModel.producto.value!!.idDrink)) { inclusive = true }
+                    navController.navigate(Pantalla3(viewModelFirestore.producto.value!!.idDrink)) {
+                        popUpTo(Pantalla3(viewModelFirestore.producto.value!!.idDrink)) { inclusive = true }
                     }
-                },
-                firestoreManager
+                }
             )
         }
 
 
         composable<Carrito> {
             PantallaFavoritosScreen(
-                firestoreManager,
                 navegarAPantalla2 = {
                     navController.navigate(Pantalla2) {
                         popUpTo(Pantalla2) { inclusive = true }
@@ -133,9 +126,7 @@ fun Navegacion(
 
         composable<Crear> {
             CrearCoctelScreen(
-                auth,
                 navController,
-                viewModel,
                 navegarAPantalla2 = {
                     navController.navigate(Pantalla2) {
                         popUpTo(Pantalla2) { inclusive = true }
